@@ -21,7 +21,7 @@
     "prepare": "pnpm run compile",
     "emulators:auth": "firebase emulators:start --only auth",
     "emulators:functions": "firebase emulators:start --only functions",
-    "emualtors:all": "firebase emulators:start"
+    "emulators:all": "firebase emulators:start"
   },
   "keywords": [],
   "author": "",
