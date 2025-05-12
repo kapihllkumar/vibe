@@ -13,7 +13,13 @@ import {
 } from 'routing-controllers';
 import {Inject, Service} from 'typedi';
 import {Progress} from '../classes/transformers';
-import {IsMongoId, IsNotEmpty, IsString} from 'class-validator';
+import {
+  IsMongoId,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 import {ProgressService} from '../services/ProgressService';
 import {Expose} from 'class-transformer';
 
@@ -172,6 +178,34 @@ export class ResetCourseProgressParams {
   courseVersionId: string;
 }
 
+export class ResetCourseProgressBody {
+  @IsOptional()
+  @IsString()
+  @IsMongoId()
+  moduleId?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @IsMongoId()
+  sectionId?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @IsMongoId()
+  itemId?: string | null;
+
+  @ValidateIf(
+    o => o.moduleId === null && (o.sectionId !== null || o.itemId !== null),
+    {message: 'moduleId is required if sectionId or itemId is provided'},
+  )
+  invalidFieldsCheck?: any; // dummy field to trigger validation error
+
+  @ValidateIf(o => o.sectionId === null && o.itemId !== null, {
+    message: 'sectionId is required if itemId is provided',
+  })
+  invalidFieldsCheck2?: any; // dummy field to trigger validation error
+}
+
 @JsonController('/users', {transformResponse: true})
 @Service()
 /**
@@ -268,14 +302,55 @@ class ProgressController {
   @OnUndefined(200)
   async resetCourseProgress(
     @Params() params: ResetCourseProgressParams,
+    @Body() body: ResetCourseProgressBody,
   ): Promise<void> {
     const {userId, courseId, courseVersionId} = params;
+    const {moduleId, sectionId, itemId} = body;
 
-    await this.progressService.resetCourseProgress(
-      userId,
-      courseId,
-      courseVersionId,
-    );
+    // Check if only moduleId is provided
+    // If so, reset progress to the beginning of the module
+    if (moduleId !== null && sectionId === null && itemId === null) {
+      await this.progressService.resetCourseProgressToModule(
+        userId,
+        courseId,
+        courseVersionId,
+        moduleId,
+      );
+    }
+
+    // Check if moduleId and sectionId are provided
+    // If so, reset progress to the beginning of the section
+    else if (moduleId !== null && sectionId !== null && itemId === null) {
+      await this.progressService.resetCourseProgressToSection(
+        userId,
+        courseId,
+        courseVersionId,
+        moduleId,
+        sectionId,
+      );
+    }
+
+    // Check if moduleId, sectionId, and itemId are provided
+    // If so, reset progress to the beginning of the item
+    else if (moduleId !== null && sectionId !== null && itemId !== null) {
+      await this.progressService.resetCourseProgressToItem(
+        userId,
+        courseId,
+        courseVersionId,
+        moduleId,
+        sectionId,
+        itemId,
+      );
+    }
+
+    // If no moduleId, sectionId, or itemId are provided, reset progress to the beginning of the course
+    else {
+      await this.progressService.resetCourseProgress(
+        userId,
+        courseId,
+        courseVersionId,
+      );
+    }
   }
 }
 export {ProgressController};

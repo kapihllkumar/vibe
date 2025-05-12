@@ -86,6 +86,169 @@ class ProgressService {
     );
   }
 
+  private async initializeProgressToModule(
+    userId: string,
+    courseId: string,
+    courseVersionId: string,
+    courseVersion: ICourseVersion,
+    moduleId: string,
+  ) {
+    // Get the first module, section, and item
+    if (!courseVersion.modules || courseVersion.modules.length === 0) {
+      return null; // No modules to track progress for
+    }
+
+    const module = courseVersion.modules.find(
+      module => module.moduleId.toString() === moduleId,
+    );
+
+    if (!module) {
+      throw new NotFoundError('Module not found');
+    }
+
+    if (!module.sections || module.sections.length === 0) {
+      return null; // No sections to track progress for
+    }
+
+    const firstSection = module.sections.sort((a, b) =>
+      a.order.localeCompare(b.order),
+    )[0];
+
+    // Get the first item from the itemsGroup
+    const itemsGroup = await this.courseRepo.readItemsGroup(
+      firstSection.itemsGroupId.toString(),
+    );
+
+    if (!itemsGroup || !itemsGroup.items || itemsGroup.items.length === 0) {
+      return null; // No items to track progress for
+    }
+
+    const firstItem = itemsGroup.items.sort((a, b) =>
+      a.order.localeCompare(b.order),
+    )[0];
+
+    // Create progress record
+    return new Progress(
+      userId,
+      courseId,
+      courseVersionId,
+      module.moduleId.toString(),
+      firstSection.sectionId.toString(),
+      firstItem.itemId.toString(),
+    );
+  }
+
+  private async initializeProgressToSection(
+    userId: string,
+    courseId: string,
+    courseVersionId: string,
+    courseVersion: ICourseVersion,
+    moduleId: string,
+    sectionId: string,
+  ) {
+    // Get the first module, section, and item
+    if (!courseVersion.modules || courseVersion.modules.length === 0) {
+      return null; // No modules to track progress for
+    }
+
+    const module = courseVersion.modules.find(
+      module => module.moduleId.toString() === moduleId,
+    );
+
+    if (!module) {
+      throw new NotFoundError('Module not found');
+    }
+
+    const section = module.sections.find(
+      section => section.sectionId.toString() === sectionId,
+    );
+
+    if (!section) {
+      throw new NotFoundError('Section not found');
+    }
+
+    // Get the first item from the itemsGroup
+    const itemsGroup = await this.courseRepo.readItemsGroup(
+      section.itemsGroupId.toString(),
+    );
+
+    if (!itemsGroup || !itemsGroup.items || itemsGroup.items.length === 0) {
+      return null; // No items to track progress for
+    }
+
+    const firstItem = itemsGroup.items.sort((a, b) =>
+      a.order.localeCompare(b.order),
+    )[0];
+
+    // Create progress record
+    return new Progress(
+      userId,
+      courseId,
+      courseVersionId,
+      module.moduleId.toString(),
+      section.sectionId.toString(),
+      firstItem.itemId.toString(),
+    );
+  }
+
+  private async initializeProgressToItem(
+    userId: string,
+    courseId: string,
+    courseVersionId: string,
+    courseVersion: ICourseVersion,
+    moduleId: string,
+    sectionId: string,
+    itemId: string,
+  ) {
+    // Get the first module, section, and item
+    if (!courseVersion.modules || courseVersion.modules.length === 0) {
+      return null; // No modules to track progress for
+    }
+
+    const module = courseVersion.modules.find(
+      module => module.moduleId.toString() === moduleId,
+    );
+
+    if (!module) {
+      throw new NotFoundError('Module not found');
+    }
+
+    const section = module.sections.find(
+      section => section.sectionId.toString() === sectionId,
+    );
+
+    if (!section) {
+      throw new NotFoundError('Section not found');
+    }
+
+    // Get the first item from the itemsGroup
+    const itemsGroup = await this.courseRepo.readItemsGroup(
+      section.itemsGroupId.toString(),
+    );
+
+    if (!itemsGroup || !itemsGroup.items || itemsGroup.items.length === 0) {
+      return null; // No items to track progress for
+    }
+
+    const item = itemsGroup.items.find(
+      item => item.itemId.toString() === itemId,
+    );
+
+    if (!item) {
+      throw new NotFoundError('Item not found');
+    }
+
+    // Create progress record
+    return new Progress(
+      userId,
+      courseId,
+      courseVersionId,
+      module.moduleId.toString(),
+      section.sectionId.toString(),
+      item.itemId.toString(),
+    );
+  }
+
   private async verifyDetails(
     userId: string,
     courseId: string,
@@ -567,6 +730,129 @@ class ProgressService {
         completed: false,
       },
     );
+    if (!result) {
+      throw new InternalServerError('Progress could not be reset');
+    }
+  }
+
+  async resetCourseProgressToModule(
+    userId: string,
+    courseId: string,
+    courseVersionId: string,
+    moduleId: string,
+  ): Promise<void> {
+    await this.verifyDetails(userId, courseId, courseVersionId);
+    // Get Course Version
+    const courseVersion = await this.courseRepo.readVersion(courseVersionId);
+
+    // Get the new progress after resetting to the module
+    const newProgress = await this.initializeProgressToModule(
+      userId,
+      courseId,
+      courseVersionId,
+      courseVersion,
+      moduleId,
+    );
+    if (!newProgress) {
+      throw new InternalServerError('New progress could not be calculated');
+    }
+    // Set progress
+    const result = await this.progressRepository.findAndReplaceProgress(
+      userId,
+      courseId,
+      courseVersionId,
+      {
+        currentModule: newProgress.currentModule,
+        currentSection: newProgress.currentSection,
+        currentItem: newProgress.currentItem,
+        completed: false,
+      },
+    );
+
+    if (!result) {
+      throw new InternalServerError('Progress could not be reset');
+    }
+  }
+
+  async resetCourseProgressToSection(
+    userId: string,
+    courseId: string,
+    courseVersionId: string,
+    moduleId: string,
+    sectionId: string,
+  ) {
+    await this.verifyDetails(userId, courseId, courseVersionId);
+    // Get Course Version
+    const courseVersion = await this.courseRepo.readVersion(courseVersionId);
+
+    // Get the new progress after resetting to the section
+    const newProgress = await this.initializeProgressToSection(
+      userId,
+      courseId,
+      courseVersionId,
+      courseVersion,
+      moduleId,
+      sectionId,
+    );
+    if (!newProgress) {
+      throw new InternalServerError('New progress could not be calculated');
+    }
+    // Set progress
+    const result = await this.progressRepository.findAndReplaceProgress(
+      userId,
+      courseId,
+      courseVersionId,
+      {
+        currentModule: newProgress.currentModule,
+        currentSection: newProgress.currentSection,
+        currentItem: newProgress.currentItem,
+        completed: false,
+      },
+    );
+
+    if (!result) {
+      throw new InternalServerError('Progress could not be reset');
+    }
+  }
+
+  async resetCourseProgressToItem(
+    userId: string,
+    courseId: string,
+    courseVersionId: string,
+    moduleId: string,
+    sectionId: string,
+    itemId: string,
+  ) {
+    await this.verifyDetails(userId, courseId, courseVersionId);
+    // Get Course Version
+    const courseVersion = await this.courseRepo.readVersion(courseVersionId);
+
+    // Get the new progress after resetting to the item
+    const newProgress = await this.initializeProgressToItem(
+      userId,
+      courseId,
+      courseVersionId,
+      courseVersion,
+      moduleId,
+      sectionId,
+      itemId,
+    );
+    if (!newProgress) {
+      throw new InternalServerError('New progress could not be calculated');
+    }
+    // Set progress
+    const result = await this.progressRepository.findAndReplaceProgress(
+      userId,
+      courseId,
+      courseVersionId,
+      {
+        currentModule: newProgress.currentModule,
+        currentSection: newProgress.currentSection,
+        currentItem: newProgress.currentItem,
+        completed: false,
+      },
+    );
+
     if (!result) {
       throw new InternalServerError('Progress could not be reset');
     }

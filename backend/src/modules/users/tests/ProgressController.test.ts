@@ -10,6 +10,7 @@ import {
   setupCoursesModuleDependencies,
 } from 'modules/courses';
 import {
+  ResetCourseProgressBody,
   setupUsersModuleDependencies,
   StartItemBody,
   StopItemBody,
@@ -559,6 +560,207 @@ describe('Progress Controller Integration Tests', () => {
         expectedModuleId: courseData.modules[0].moduleId,
         expectedSectionId: courseData.modules[0].sections[0].sectionId,
         expectedItemId: courseData.modules[0].sections[0].items[0].itemId,
+        expectedCompleted: false,
+        app,
+      });
+    }, 100000);
+    it('should reset progress to module correctly for a user in a course', async () => {
+      // Create a course with modules, sections, and items
+      courseData = await createCourseWithModulesSectionsAndItems(3, 3, 3, app);
+
+      // Create a user
+      user = await createUser(app);
+
+      // Create enrollment
+      await createEnrollment(
+        app,
+        user.id,
+        courseData.courseId,
+        courseData.courseVersionId,
+        courseData.modules[0].moduleId,
+        courseData.modules[0].sections[0].sectionId,
+        courseData.modules[0].sections[0].items[0].itemId,
+      );
+
+      // Start Stop and Update Progress
+      const {startItemResponse, stopItemResponse, updateProgressResponse} =
+        await startStopAndUpdateProgress({
+          userId: user.id,
+          courseId: courseData.courseId,
+          courseVersionId: courseData.courseVersionId,
+          itemId: courseData.modules[0].sections[0].items[0].itemId,
+          moduleId: courseData.modules[0].moduleId,
+          sectionId: courseData.modules[0].sections[0].sectionId,
+          app,
+        });
+
+      await verifyProgressInDatabase({
+        userId: user.id,
+        courseId: courseData.courseId,
+        courseVersionId: courseData.courseVersionId,
+        expectedModuleId: courseData.modules[0].moduleId,
+        expectedSectionId: courseData.modules[0].sections[0].sectionId,
+        expectedItemId: courseData.modules[0].sections[0].items[1].itemId,
+        expectedCompleted: false,
+        app,
+      });
+
+      const resetBody: ResetCourseProgressBody = {
+        moduleId: courseData.modules[1].moduleId,
+      };
+
+      // Reset the progress
+      const resetResponse = await request(app)
+        .patch(
+          `/users/${user.id}/progress/courses/${courseData.courseId}/versions/${courseData.courseVersionId}/reset`,
+        )
+        .send(resetBody);
+
+      expect(resetResponse.status).toBe(200);
+      expect(resetResponse.body).toBe('');
+
+      await verifyProgressInDatabase({
+        userId: user.id,
+        courseId: courseData.courseId,
+        courseVersionId: courseData.courseVersionId,
+        expectedModuleId: courseData.modules[1].moduleId,
+        expectedSectionId: courseData.modules[1].sections[0].sectionId,
+        expectedItemId: courseData.modules[1].sections[0].items[0].itemId,
+        expectedCompleted: false,
+        app,
+      });
+    }, 100000);
+    it('should reset progress to section correctly for a user in a course', async () => {
+      // Create a course with modules, sections, and items
+      courseData = await createCourseWithModulesSectionsAndItems(3, 3, 3, app);
+
+      // Create a user
+      user = await createUser(app);
+
+      // Create enrollment
+      await createEnrollment(
+        app,
+        user.id,
+        courseData.courseId,
+        courseData.courseVersionId,
+        courseData.modules[0].moduleId,
+        courseData.modules[0].sections[0].sectionId,
+        courseData.modules[0].sections[0].items[0].itemId,
+      );
+
+      // Start Stop and Update Progress
+      const {startItemResponse, stopItemResponse, updateProgressResponse} =
+        await startStopAndUpdateProgress({
+          userId: user.id,
+          courseId: courseData.courseId,
+          courseVersionId: courseData.courseVersionId,
+          itemId: courseData.modules[0].sections[0].items[0].itemId,
+          moduleId: courseData.modules[0].moduleId,
+          sectionId: courseData.modules[0].sections[0].sectionId,
+          app,
+        });
+
+      await verifyProgressInDatabase({
+        userId: user.id,
+        courseId: courseData.courseId,
+        courseVersionId: courseData.courseVersionId,
+        expectedModuleId: courseData.modules[0].moduleId,
+        expectedSectionId: courseData.modules[0].sections[0].sectionId,
+        expectedItemId: courseData.modules[0].sections[0].items[1].itemId,
+        expectedCompleted: false,
+        app,
+      });
+
+      const resetBody: ResetCourseProgressBody = {
+        moduleId: courseData.modules[1].moduleId,
+        sectionId: courseData.modules[1].sections[1].sectionId,
+      };
+
+      // Reset the progress
+      const resetResponse = await request(app)
+        .patch(
+          `/users/${user.id}/progress/courses/${courseData.courseId}/versions/${courseData.courseVersionId}/reset`,
+        )
+        .send(resetBody);
+
+      expect(resetResponse.status).toBe(200);
+      expect(resetResponse.body).toBe('');
+
+      await verifyProgressInDatabase({
+        userId: user.id,
+        courseId: courseData.courseId,
+        courseVersionId: courseData.courseVersionId,
+        expectedModuleId: courseData.modules[1].moduleId,
+        expectedSectionId: courseData.modules[1].sections[1].sectionId,
+        expectedItemId: courseData.modules[1].sections[1].items[0].itemId,
+        expectedCompleted: false,
+        app,
+      });
+    }, 100000);
+    it('should reset progress to item correctly for a user in a course', async () => {
+      // Create a course with modules, sections, and items
+      courseData = await createCourseWithModulesSectionsAndItems(3, 3, 4, app);
+
+      // Create a user
+      user = await createUser(app);
+
+      // Create enrollment
+      await createEnrollment(
+        app,
+        user.id,
+        courseData.courseId,
+        courseData.courseVersionId,
+        courseData.modules[0].moduleId,
+        courseData.modules[0].sections[0].sectionId,
+        courseData.modules[0].sections[0].items[0].itemId,
+      );
+
+      // Start Stop and Update Progress
+      const {startItemResponse, stopItemResponse, updateProgressResponse} =
+        await startStopAndUpdateProgress({
+          userId: user.id,
+          courseId: courseData.courseId,
+          courseVersionId: courseData.courseVersionId,
+          itemId: courseData.modules[0].sections[0].items[0].itemId,
+          moduleId: courseData.modules[0].moduleId,
+          sectionId: courseData.modules[0].sections[0].sectionId,
+          app,
+        });
+
+      await verifyProgressInDatabase({
+        userId: user.id,
+        courseId: courseData.courseId,
+        courseVersionId: courseData.courseVersionId,
+        expectedModuleId: courseData.modules[0].moduleId,
+        expectedSectionId: courseData.modules[0].sections[0].sectionId,
+        expectedItemId: courseData.modules[0].sections[0].items[1].itemId,
+        expectedCompleted: false,
+        app,
+      });
+
+      const resetBody: ResetCourseProgressBody = {
+        moduleId: courseData.modules[1].moduleId,
+        sectionId: courseData.modules[1].sections[1].sectionId,
+        itemId: courseData.modules[1].sections[1].items[2].itemId,
+      };
+
+      // Reset the progress
+      const resetResponse = await request(app)
+        .patch(
+          `/users/${user.id}/progress/courses/${courseData.courseId}/versions/${courseData.courseVersionId}/reset`,
+        )
+        .send(resetBody);
+
+      expect(resetResponse.status).toBe(200);
+      expect(resetResponse.body).toBe('');
+
+      await verifyProgressInDatabase({
+        userId: user.id,
+        courseId: courseData.courseId,
+        courseVersionId: courseData.courseVersionId,
+        expectedModuleId: courseData.modules[1].moduleId,
+        expectedSectionId: courseData.modules[1].sections[1].sectionId,
+        expectedItemId: courseData.modules[1].sections[1].items[2].itemId,
         expectedCompleted: false,
         app,
       });
