@@ -255,7 +255,6 @@ class ProgressService {
     );
   }
 
-
   private async verifyDetails(
     userId: string,
     courseId: string,
@@ -380,7 +379,6 @@ class ProgressService {
 
     // Handle when the item is the last item in the last section but not the last module
     if (isLastItem && isLastSection && !isLastModule) {
-
       // Get index of the current module
       const currentModuleIndex = sortedModules.findIndex(
         module => module.moduleId === moduleId,
@@ -453,7 +451,6 @@ class ProgressService {
       )[0];
       currentItem = firstItem.itemId.toString();
     }
-
 
     if (!isLastItem && !isLastSection && isLastModule) {
       // Get index of the current item
@@ -709,7 +706,6 @@ class ProgressService {
     }
   }
 
-
   // Admin Level Endpoint
   async resetCourseProgress(
     userId: string,
@@ -867,7 +863,6 @@ class ProgressService {
       throw new InternalServerError('Progress could not be reset');
     }
   }
-
 }
 
 export {ProgressService};

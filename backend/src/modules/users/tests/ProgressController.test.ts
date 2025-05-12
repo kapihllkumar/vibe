@@ -35,7 +35,6 @@ import {createEnrollment} from './utils/createEnrollment';
 import {startStopAndUpdateProgress} from './utils/startStopAndUpdateProgress';
 import {verifyProgressInDatabase} from './utils/verifyProgressInDatabase';
 
-
 describe('Progress Controller Integration Tests', () => {
   const appInstance = Express();
   let app;
@@ -83,7 +82,7 @@ describe('Progress Controller Integration Tests', () => {
     };
 
     app = useExpressServer(appInstance, options);
-    
+
     courseData = await createCourseWithModulesSectionsAndItems(2, 2, 3, app);
 
     // Create a user
@@ -103,18 +102,15 @@ describe('Progress Controller Integration Tests', () => {
     jest.setTimeout(30000);
   }, 900000);
 
-
   afterAll(async () => {
     // Stop the in-memory MongoDB server
     // await mongoServer.stop();
     await Container.get<MongoDatabase>('Database').disconnect();
     // Close all containers
     Container.reset();
-
   });
 
-  beforeEach(async () => {
-  }, 10000);
+  beforeEach(async () => {}, 10000);
 
   // ------Tests for Create <ModuleName>------
   describe('Fetch Progress Data', () => {
@@ -129,14 +125,12 @@ describe('Progress Controller Integration Tests', () => {
         expectedCompleted: false,
         app,
       });
-
     });
 
     it('should return 400 if userId is invalid', async () => {
       const invalidUserId = 'invalidUserId';
       const courseId = courseData.courseId;
       const courseVersionId = courseData.courseVersionId;
-
 
       const response = await request(app)
         .get(
@@ -267,7 +261,6 @@ describe('Progress Controller Integration Tests', () => {
         itemId: courseData.modules[0].sections[0].items[0].itemId,
         moduleId: courseData.modules[0].moduleId,
         sectionId: courseData.modules[0].sections[0].sectionId,
-
       };
       // Start the item progress
       const startItemResponse = await request(app)
@@ -416,7 +409,7 @@ describe('Progress Controller Integration Tests', () => {
         'Watch time is not valid, the user did not watch the item long enough',
       );
     }, 50000);
-    
+
     it('should update the progress, if watch time is actually greater than or equal to 0.5 times video length', async () => {
       // Start the item progress
       const startItemBody: StartItemBody = {
@@ -901,6 +894,5 @@ describe('Progress Controller Integration Tests', () => {
         app,
       });
     }, 100000);
-
   });
 });

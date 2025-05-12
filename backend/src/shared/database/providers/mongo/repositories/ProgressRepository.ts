@@ -114,7 +114,7 @@ class ProgressRepository {
       );
     }
   }
-  
+
   /**
    * Start watching an item
    * @param userId - The ID of the user
@@ -235,7 +235,6 @@ class ProgressRepository {
       );
     }
   }
-
 }
 
 export {ProgressRepository};

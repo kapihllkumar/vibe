@@ -172,6 +172,5 @@ class ProgressController {
       );
     }
   }
-
 }
 export {ProgressController};
