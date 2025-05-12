@@ -4,7 +4,6 @@ import {
   Body,
   Get,
   HttpCode,
-  InternalServerError,
   JsonController,
   OnUndefined,
   Params,
@@ -13,198 +12,19 @@ import {
 } from 'routing-controllers';
 import {Inject, Service} from 'typedi';
 import {Progress} from '../classes/transformers';
-import {
-  IsMongoId,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  ValidateIf,
-} from 'class-validator';
 import {ProgressService} from '../services/ProgressService';
-import {Expose} from 'class-transformer';
-
-export class GetUserProgressParams {
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  userId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseVersionId: string;
-}
-
-export class StartItemBody {
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  itemId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  moduleId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  sectionId: string;
-}
-
-export class StartItemParams {
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  userId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseVersionId: string;
-}
-
-export class StartItemResponse {
-  @Expose()
-  watchItemId: string;
-
-  constructor(data: Partial<StartItemResponse>) {
-    Object.assign(this, data);
-  }
-}
-
-export class StopItemParams {
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  userId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseVersionId: string;
-}
-
-export class StopItemBody {
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  watchItemId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  itemId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  sectionId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  moduleId: string;
-}
-
-export class UpdateProgressBody {
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  moduleId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  sectionId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  itemId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  watchItemId: string;
-}
-
-export class UpdateProgressParams {
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  userId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseVersionId: string;
-}
-
-export class ResetCourseProgressParams {
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  userId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsMongoId()
-  courseVersionId: string;
-}
-
-export class ResetCourseProgressBody {
-  @IsOptional()
-  @IsString()
-  @IsMongoId()
-  moduleId?: string | null;
-
-  @IsOptional()
-  @IsString()
-  @IsMongoId()
-  sectionId?: string | null;
-
-  @IsOptional()
-  @IsString()
-  @IsMongoId()
-  itemId?: string | null;
-
-  @ValidateIf(
-    o => o.moduleId === null && (o.sectionId !== null || o.itemId !== null),
-    {message: 'moduleId is required if sectionId or itemId is provided'},
-  )
-  invalidFieldsCheck?: any; // dummy field to trigger validation error
-
-  @ValidateIf(o => o.sectionId === null && o.itemId !== null, {
-    message: 'sectionId is required if itemId is provided',
-  })
-  invalidFieldsCheck2?: any; // dummy field to trigger validation error
-}
+import {
+  GetUserProgressParams,
+  StartItemParams,
+  StartItemBody,
+  StartItemResponse,
+  StopItemParams,
+  StopItemBody,
+  UpdateProgressParams,
+  UpdateProgressBody,
+  ResetCourseProgressParams,
+  ResetCourseProgressBody,
+} from '../classes/validators';
 
 @JsonController('/users', {transformResponse: true})
 @Service()
@@ -300,7 +120,7 @@ class ProgressController {
   @Authorized(['admin', 'teacher'])
   @Patch('/:userId/progress/courses/:courseId/versions/:courseVersionId/reset')
   @OnUndefined(200)
-  async resetCourseProgress(
+  async resetProgress(
     @Params() params: ResetCourseProgressParams,
     @Body() body: ResetCourseProgressBody,
   ): Promise<void> {
@@ -309,7 +129,7 @@ class ProgressController {
 
     // Check if only moduleId is provided
     // If so, reset progress to the beginning of the module
-    if (moduleId !== null && sectionId === null && itemId === null) {
+    if (moduleId && !sectionId && !itemId) {
       await this.progressService.resetCourseProgressToModule(
         userId,
         courseId,
@@ -320,7 +140,7 @@ class ProgressController {
 
     // Check if moduleId and sectionId are provided
     // If so, reset progress to the beginning of the section
-    else if (moduleId !== null && sectionId !== null && itemId === null) {
+    else if (moduleId && sectionId && !itemId) {
       await this.progressService.resetCourseProgressToSection(
         userId,
         courseId,
@@ -332,7 +152,7 @@ class ProgressController {
 
     // Check if moduleId, sectionId, and itemId are provided
     // If so, reset progress to the beginning of the item
-    else if (moduleId !== null && sectionId !== null && itemId !== null) {
+    else if (moduleId && sectionId && itemId) {
       await this.progressService.resetCourseProgressToItem(
         userId,
         courseId,

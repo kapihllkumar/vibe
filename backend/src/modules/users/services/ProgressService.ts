@@ -103,7 +103,9 @@ class ProgressService {
     );
 
     if (!module) {
-      throw new NotFoundError('Module not found');
+      throw new NotFoundError(
+        'Module not found in the specified course version.',
+      );
     }
 
     if (!module.sections || module.sections.length === 0) {
@@ -156,7 +158,9 @@ class ProgressService {
     );
 
     if (!module) {
-      throw new NotFoundError('Module not found');
+      throw new NotFoundError(
+        'Module not found in the specified course version.',
+      );
     }
 
     const section = module.sections.find(
@@ -164,7 +168,7 @@ class ProgressService {
     );
 
     if (!section) {
-      throw new NotFoundError('Section not found');
+      throw new NotFoundError('Section not found in the specified module.');
     }
 
     // Get the first item from the itemsGroup
@@ -210,7 +214,9 @@ class ProgressService {
     );
 
     if (!module) {
-      throw new NotFoundError('Module not found');
+      throw new NotFoundError(
+        'Module not found in the specified course version.',
+      );
     }
 
     const section = module.sections.find(
@@ -218,7 +224,7 @@ class ProgressService {
     );
 
     if (!section) {
-      throw new NotFoundError('Section not found');
+      throw new NotFoundError('Section not found in the specified module.');
     }
 
     // Get the first item from the itemsGroup
@@ -235,7 +241,7 @@ class ProgressService {
     );
 
     if (!item) {
-      throw new NotFoundError('Item not found');
+      throw new NotFoundError('Item not found in the specified section.');
     }
 
     // Create progress record
