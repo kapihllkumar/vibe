@@ -114,6 +114,7 @@ class ProgressRepository {
       );
     }
   }
+  
   /**
    * Start watching an item
    * @param userId - The ID of the user
@@ -195,6 +196,7 @@ class ProgressRepository {
 
     return result;
   }
+
   async getWatchTimeById(id: string): Promise<IWatchTime | null> {
     await this.init();
     const result = await this.watchTimeCollection.findOne({
@@ -233,6 +235,7 @@ class ProgressRepository {
       );
     }
   }
+
 }
 
 export {ProgressRepository};
