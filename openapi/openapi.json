@@ -166,7 +166,7 @@
           },
           "children": {
             "items": {
-              "$ref": "#/components/schemas/Array"
+              "type": "object"
             },
             "type": "array",
             "format": "ValidationErrorResponse",
@@ -327,30 +327,30 @@
           "versions": {
             "minLength": 1,
             "type": "array",
+            "items": {
+              "type": "string",
+              "format": "Mongo Object ID"
+            },
             "description": "List of course version IDs",
             "example": [
               "60d5ec49b3f1c8e4a8f8b8c2",
               "60d5ec49b3f1c8e4a8f8b8c3"
             ],
-            "readOnly": true,
-            "items": {
-              "type": "string",
-              "format": "Mongo Object ID"
-            }
+            "readOnly": true
           },
           "instructors": {
             "minLength": 1,
             "type": "array",
+            "items": {
+              "type": "string",
+              "format": "Mongo Object ID"
+            },
             "description": "List of instructor IDs associated with the course",
             "example": [
               "60d5ec49b3f1c8e4a8f8b8c4",
               "60d5ec49b3f1c8e4a8f8b8c5"
             ],
-            "readOnly": true,
-            "items": {
-              "type": "string",
-              "format": "Mongo Object ID"
-            }
+            "readOnly": true
           },
           "createdAt": {
             "minLength": 1,
@@ -423,7 +423,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1124,7 +1127,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1190,7 +1196,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1269,7 +1278,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1324,7 +1336,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1365,7 +1380,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1405,7 +1423,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1460,7 +1481,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1501,7 +1525,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1585,7 +1612,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1638,7 +1668,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1679,7 +1712,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1719,7 +1755,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1758,7 +1797,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -1799,7 +1841,10 @@
                       "type": "integer"
                     },
                     {
-                      "type": "array"
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
                     },
                     {
                       "type": "object"
@@ -2675,6 +2720,32 @@
           "progress"
         ]
       },
+      "EnrollmentResponse": {
+        "properties": {
+          "totalDocuments": {
+            "type": "integer"
+          },
+          "totalPages": {
+            "type": "integer"
+          },
+          "currentPage": {
+            "type": "integer"
+          },
+          "enrollments": {
+            "items": {
+              "type": "object"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object",
+        "required": [
+          "totalDocuments",
+          "totalPages",
+          "currentPage",
+          "enrollments"
+        ]
+      },
       "EnrollmentNotFoundErrorResponse": {
         "properties": {
           "message": {
@@ -2708,7 +2779,7 @@
   },
   "openapi": "3.0.0",
   "paths": {
-    "/api/auth/signup": {
+    "/auth/signup": {
       "post": {
         "operationId": "AuthController.signup",
         "requestBody": {
@@ -2761,7 +2832,7 @@
         "description": "Creates a new user account with the provided credentials."
       }
     },
-    "/api/auth/signup/verify": {
+    "/auth/signup/verify": {
       "post": {
         "operationId": "AuthController.verifySignUpProvider",
         "requestBody": {
@@ -2814,14 +2885,15 @@
         "description": "Creates a new user account using the token provided."
       }
     },
-    "/api/auth/change-password": {
+    "/auth/change-password": {
       "patch": {
         "operationId": "AuthController.changePassword",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChangePasswordBody"
+                "type": "object",
+                "description": "Schema for ChangePasswordBody (reference not found)"
               }
             }
           },
@@ -2867,7 +2939,7 @@
         "description": "Changes the authenticated user's password to the new password provided."
       }
     },
-    "/api/auth/verify": {
+    "/auth/verify": {
       "post": {
         "operationId": "AuthController.verifyToken",
         "responses": {
@@ -2899,7 +2971,7 @@
         "description": "Verifies if the user's authentication token is valid and belongs to an admin user."
       }
     },
-    "/api/courses/": {
+    "/courses/": {
       "post": {
         "operationId": "CourseController.create",
         "requestBody": {
@@ -2942,7 +3014,7 @@
         "description": "Creates a new course with the provided details."
       }
     },
-    "/api/courses/{id}": {
+    "/courses/{id}": {
       "get": {
         "operationId": "CourseController.read",
         "parameters": [
@@ -3063,7 +3135,7 @@
         "description": "Updates the course details for the specified course ID."
       }
     },
-    "/api/courses/{id}/versions": {
+    "/courses/{id}/versions": {
       "post": {
         "operationId": "CourseVersionController.create",
         "parameters": [
@@ -3097,7 +3169,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CreateCourseVersionResponse"
+                  "type": "object",
+                  "description": "Schema for CreateCourseVersionResponse (reference not found)"
                 }
               }
             },
@@ -3117,7 +3190,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CourseVersionNotFoundErrorResponse"
+                  "type": "object",
+                  "description": "Schema for CourseVersionNotFoundErrorResponse (reference not found)"
                 }
               }
             },
@@ -3131,7 +3205,7 @@
         "description": "Creates a new version for a specific course."
       }
     },
-    "/api/courses/versions/{id}": {
+    "/courses/versions/{id}": {
       "get": {
         "operationId": "CourseVersionController.read",
         "parameters": [
@@ -3154,7 +3228,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CourseVersionDataResponse"
+                  "type": "object",
+                  "description": "Schema for CourseVersionDataResponse (reference not found)"
                 }
               }
             },
@@ -3174,7 +3249,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CourseVersionNotFoundErrorResponse"
+                  "type": "object",
+                  "description": "Schema for CourseVersionNotFoundErrorResponse (reference not found)"
                 }
               }
             },
@@ -3188,7 +3264,7 @@
         "description": "Retrieves a course version by its ID."
       }
     },
-    "/api/courses/{courseId}/versions/{versionId}": {
+    "/courses/{courseId}/versions/{versionId}": {
       "delete": {
         "operationId": "CourseVersionController.delete",
         "parameters": [
@@ -3244,7 +3320,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CourseVersionNotFoundErrorResponse"
+                  "type": "object",
+                  "description": "Schema for CourseVersionNotFoundErrorResponse (reference not found)"
                 }
               }
             },
@@ -3258,7 +3335,7 @@
         "description": "Deletes a course version by its ID."
       }
     },
-    "/api/courses/versions/{versionId}/modules": {
+    "/courses/versions/{versionId}/modules": {
       "post": {
         "operationId": "ModuleController.create",
         "parameters": [
@@ -3326,7 +3403,7 @@
         "description": "Creates a new module in the specified course version with the provided details."
       }
     },
-    "/api/courses/versions/{versionId}/modules/{moduleId}": {
+    "/courses/versions/{versionId}/modules/{moduleId}": {
       "put": {
         "operationId": "ModuleController.update",
         "parameters": [
@@ -3475,7 +3552,7 @@
         "description": "Permanently removes a module from a course version."
       }
     },
-    "/api/courses/versions/{versionId}/modules/{moduleId}/move": {
+    "/courses/versions/{versionId}/modules/{moduleId}/move": {
       "put": {
         "operationId": "ModuleController.move",
         "parameters": [
@@ -3556,7 +3633,7 @@
         "description": "Reorders a module within its course version by placing it before or after another module."
       }
     },
-    "/api/courses/versions/{versionId}/modules/{moduleId}/sections": {
+    "/courses/versions/{versionId}/modules/{moduleId}/sections": {
       "post": {
         "operationId": "SectionController.create",
         "parameters": [
@@ -3639,7 +3716,7 @@
         "description": "Creates a new section in the specified module and automatically generates an associated items group."
       }
     },
-    "/api/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}": {
+    "/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}": {
       "put": {
         "operationId": "SectionController.update",
         "parameters": [
@@ -3817,7 +3894,7 @@
         "description": "Permanently removes a section from a module."
       }
     },
-    "/api/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}/move": {
+    "/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}/move": {
       "put": {
         "operationId": "SectionController.move",
         "parameters": [
@@ -3914,7 +3991,7 @@
         "description": "Reorders a section within its module by placing it before or after another section."
       }
     },
-    "/api/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}/items": {
+    "/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}/items": {
       "post": {
         "operationId": "ItemController.create",
         "parameters": [
@@ -4089,7 +4166,7 @@
         "description": "Retrieves all items from the specified section of a module in a course version."
       }
     },
-    "/api/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}/items/{itemId}": {
+    "/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}/items/{itemId}": {
       "put": {
         "operationId": "ItemController.update",
         "parameters": [
@@ -4196,7 +4273,7 @@
         "description": "Updates an existing item in the specified section with the provided details."
       }
     },
-    "/api/courses/itemGroups/{itemsGroupId}/items/{itemId}": {
+    "/courses/itemGroups/{itemsGroupId}/items/{itemId}": {
       "delete": {
         "operationId": "ItemController.delete",
         "parameters": [
@@ -4266,7 +4343,7 @@
         "description": "Deletes an item from a course section permanently."
       }
     },
-    "/api/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}/items/{itemId}/move": {
+    "/courses/versions/{versionId}/modules/{moduleId}/sections/{sectionId}/items/{itemId}/move": {
       "put": {
         "operationId": "ItemController.move",
         "parameters": [
@@ -4373,7 +4450,7 @@
         "description": "Moves an item to a new position within its section by recalculating its order."
       }
     },
-    "/api/users/{userId}/enrollments/courses/{courseId}/versions/{courseVersionId}": {
+    "/users/{userId}/enrollments/courses/{courseId}/versions/{courseVersionId}": {
       "post": {
         "operationId": "EnrollmentController.enrollUser",
         "parameters": [
@@ -4456,7 +4533,7 @@
         "description": "Enrolls a user in a specific version of a course."
       }
     },
-    "/api/users/{userId}/enrollments/courses/{courseId}/versions/{courseVersionId}/unenroll": {
+    "/users/{userId}/enrollments/courses/{courseId}/versions/{courseVersionId}/unenroll": {
       "post": {
         "operationId": "EnrollmentController.unenrollUser",
         "parameters": [
@@ -4560,7 +4637,72 @@
         "description": "Unenrolls a user from a specific version of a course."
       }
     },
-    "/api/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/": {
+    "/users/{userId}/enrollments": {
+      "get": {
+        "operationId": "EnrollmentController.getUserEnrollments",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "pattern": "[^\\/#\\?]+?",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {}
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {}
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentResponse"
+                }
+              }
+            },
+            "description": "List of user enrollments"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentNotFoundErrorResponse"
+                }
+              }
+            },
+            "description": "Enrollments Not Found"
+          }
+        },
+        "summary": "Get User Enrollments",
+        "tags": [
+          "User Enrollments"
+        ],
+        "description": "Retrieves a paginated list of courses and course versions a user is enrolled in."
+      }
+    },
+    "/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/": {
       "get": {
         "operationId": "ProgressController.getUserProgress",
         "parameters": [
@@ -4633,7 +4775,7 @@
         "description": "Retrieves a user's progress for a specific course version."
       }
     },
-    "/api/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/start": {
+    "/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/start": {
       "post": {
         "operationId": "ProgressController.startItem",
         "parameters": [
@@ -4717,7 +4859,7 @@
         "description": "Starts tracking a user's progress on a specific course item."
       }
     },
-    "/api/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/stop": {
+    "/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/stop": {
       "post": {
         "operationId": "ProgressController.stopItem",
         "parameters": [
@@ -4797,7 +4939,7 @@
         "description": "Stops tracking a user's progress on a specific course item."
       }
     },
-    "/api/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/update": {
+    "/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/update": {
       "patch": {
         "operationId": "ProgressController.updateProgress",
         "parameters": [
@@ -4877,7 +5019,7 @@
         "description": "Updates a user's progress for a specific course item."
       }
     },
-    "/api/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/reset": {
+    "/users/{userId}/progress/courses/{courseId}/versions/{courseVersionId}/reset": {
       "patch": {
         "operationId": "ProgressController.resetProgress",
         "parameters": [
@@ -5034,7 +5176,7 @@
   ],
   "servers": [
     {
-      "url": "http://localhost:4001/api",
+      "url": "http://localhost:4001",
       "description": "Development server"
     },
     {
