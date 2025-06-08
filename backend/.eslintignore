@@ -6,3 +6,4 @@ scripts
 .prettierrc.cjs
 jest.config.ts
 esbuild.config.js
+vitest.config.ts
