@@ -1,10 +1,3 @@
-import {
-  IVideoDetails,
-  IQuizDetails,
-  IBlogDetails,
-  IBaseItem,
-  ItemType,
-} from '#shared/index.js';
 import {Type} from 'class-transformer';
 import {
   IsNotEmpty,
@@ -27,6 +20,13 @@ import {
 import {JSONSchema} from 'class-validator-jsonschema';
 import {CourseVersion} from '../transformers/CourseVersion.js';
 import {ItemsGroup} from '../transformers/Item.js';
+import {
+  IVideoDetails,
+  IQuizDetails,
+  IBlogDetails,
+  IBaseItem,
+  ItemType,
+} from '#root/shared/interfaces/models.js';
 
 class VideoDetailsPayloadValidator implements IVideoDetails {
   @JSONSchema({

@@ -7,19 +7,16 @@ import {RoutingControllersOptions, useExpressServer} from 'routing-controllers';
 import {appConfig} from '#config/app.js';
 import {sharedContainerModule} from '#root/container.js';
 import {InversifyAdapter} from '#root/inversify-adapter.js';
-import {
-  coursesContainerModule,
-  coursesModuleOptions,
-  setupCoursesContainer,
-} from '#courses/index.js';
 import {rateLimiter, loggingHandler} from '#shared/index.js';
 import {authContainerModule} from '#auth/container.js';
 import {authModuleOptions, setupAuthContainer} from '#auth/index.js';
-import {OpenApiSpecService} from '#docs/index.js';
 import {quizzesContainerModule} from '#quizzes/container.js';
 import {quizzesModuleOptions, setupQuizzesContainer} from '#quizzes/index.js';
 import {usersContainerModule} from '#users/container.js';
 import {usersModuleOptions, setupUsersContainer} from '#users/index.js';
+import {coursesContainerModule} from '#courses/container.js';
+import {coursesModuleOptions, setupCoursesContainer} from '#courses/index.js';
+import {OpenApiSpecService} from '#docs/services/OpenApiSpecService.js';
 
 export const application = Express();
 

@@ -1,4 +1,4 @@
-import {ID} from '#shared/index.js';
+import {ID} from '#root/shared/interfaces/models.js';
 import {Expose} from 'class-transformer';
 import {
   IsNotEmpty,

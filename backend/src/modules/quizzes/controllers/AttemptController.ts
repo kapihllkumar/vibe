@@ -7,7 +7,7 @@ import {
   SubmitAttemptResponse,
 } from '#quizzes/classes/validators/QuizValidator.js';
 import {AttemptService} from '#quizzes/services/AttemptService.js';
-import {IUser} from '#shared/index.js';
+
 import {injectable, inject} from 'inversify';
 import {
   JsonController,
@@ -18,6 +18,7 @@ import {
   Body,
 } from 'routing-controllers';
 import {QUIZZES_TYPES} from '#quizzes/types.js';
+import {IUser} from '#root/shared/interfaces/models.js';
 
 @injectable()
 @JsonController('/quizzes')

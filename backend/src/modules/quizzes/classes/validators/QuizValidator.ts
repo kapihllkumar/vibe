@@ -6,8 +6,6 @@ import {
   IAttemptDetails,
   IQuestionDetails,
 } from '#quizzes/interfaces/grading.js';
-import {IQuestionRenderView} from '#quizzes/question-processing/index.js';
-import {QuestionType, ItemType, IQuizDetails} from '#shared/index.js';
 import {Type} from 'class-transformer';
 import {
   IsMongoId,
@@ -24,6 +22,9 @@ import {
 import {JSONSchema} from 'class-validator-jsonschema';
 import {ObjectId} from 'mongodb';
 import {QuestionBankRef} from '../transformers/QuestionBank.js';
+import {ItemType, IQuizDetails} from '#root/shared/interfaces/models.js';
+import {QuestionType} from '#root/shared/interfaces/quiz.js';
+import {IQuestionRenderView} from '#quizzes/question-processing/renderers/interfaces/RenderViews.js';
 
 // Request Schemas
 class CreateAttemptParams {

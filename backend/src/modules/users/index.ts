@@ -27,9 +27,3 @@ export const usersModuleOptions: RoutingControllersOptions = {
   },
   validation: true,
 };
-
-export * from './classes/index.js';
-export * from './controllers/index.js';
-export * from './services/index.js';
-export * from './types.js';
-export * from './container.js';

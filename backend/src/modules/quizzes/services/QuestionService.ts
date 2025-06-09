@@ -1,18 +1,15 @@
-import {BaseQuestion} from '#quizzes/classes/index.js';
-import {
-  ParameterMap,
-  IQuestionRenderView,
-} from '#quizzes/question-processing/index.js';
-import {QuestionProcessor} from '#quizzes/question-processing/QuestionProcessor.js';
-import {
-  QuestionRepository,
-  QuestionBankRepository,
-} from '#quizzes/repositories/index.js';
-import {GLOBAL_TYPES} from '#root/types.js';
-import {BaseService, MongoDatabase} from '#shared/index.js';
 import {injectable, inject} from 'inversify';
 import {NotFoundError, BadRequestError} from 'routing-controllers';
 import {QUIZZES_TYPES} from '../types.js';
+import {BaseQuestion} from '#quizzes/classes/transformers/Question.js';
+import {QuestionProcessor} from '#quizzes/question-processing/QuestionProcessor.js';
+import {ParameterMap} from '#quizzes/question-processing/tag-parser/tags/Tag.js';
+import {QuestionBankRepository} from '#quizzes/repositories/providers/mongodb/QuestionBankRepository.js';
+import {QuestionRepository} from '#quizzes/repositories/providers/mongodb/QuestionRepository.js';
+import {BaseService} from '#root/shared/classes/BaseService.js';
+import {MongoDatabase} from '#root/shared/database/providers/mongo/MongoDatabase.js';
+import {GLOBAL_TYPES} from '#root/types.js';
+import {IQuestionRenderView} from '#quizzes/question-processing/renderers/interfaces/RenderViews.js';
 
 @injectable()
 class QuestionService extends BaseService {

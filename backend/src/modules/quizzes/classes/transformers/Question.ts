@@ -1,3 +1,4 @@
+import {ObjectId} from 'mongodb';
 import {
   IQuestion,
   QuestionType,
@@ -9,9 +10,7 @@ import {
   ILotOrder,
   INATSolution,
   IDESSolution,
-} from '#shared/index.js';
-import {ObjectId} from 'mongodb';
-import {QuestionBody} from '../validators/QuestionValidator.js';
+} from '#root/shared/interfaces/quiz.js';
 
 abstract class BaseQuestion implements IQuestion {
   _id?: string | ObjectId;
@@ -109,7 +108,7 @@ function ensureLotItemIds(items: ILotItem[]): ILotItem[] {
 
 class QuestionFactory {
   static createQuestion(
-    body: QuestionBody,
+    body: any,
   ): SOLQuestion | SMLQuestion | OTLQuestion | NATQuestion | DESQuestion {
     switch (body.question.type) {
       case 'SELECT_ONE_IN_LOT':

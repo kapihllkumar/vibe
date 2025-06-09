@@ -1,9 +1,3 @@
-import {
-  QuestionBody,
-  QuestionId,
-  QuestionFactory,
-  QuestionResponse,
-} from '#quizzes/classes/index.js';
 import {QuestionService} from '#quizzes/services/QuestionService.js';
 import {injectable, inject} from 'inversify';
 import {
@@ -19,6 +13,12 @@ import {
 } from 'routing-controllers';
 import {QUIZZES_TYPES} from '#quizzes/types.js';
 import {QuestionProcessor} from '#quizzes/question-processing/QuestionProcessor.js';
+import {QuestionFactory} from '#quizzes/classes/transformers/Question.js';
+import {
+  QuestionBody,
+  QuestionId,
+  QuestionResponse,
+} from '#quizzes/classes/validators/QuestionValidator.js';
 @JsonController('/questions')
 @injectable()
 class QuestionController {

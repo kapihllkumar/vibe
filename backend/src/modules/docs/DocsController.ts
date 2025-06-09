@@ -1,6 +1,6 @@
 import {apiReference} from '@scalar/express-api-reference';
 import {Controller, Get} from 'routing-controllers';
-import {OpenApiSpecService} from './index.js';
+import {OpenApiSpecService} from './services/OpenApiSpecService.js';
 
 @Controller('/docs')
 class DocsController {

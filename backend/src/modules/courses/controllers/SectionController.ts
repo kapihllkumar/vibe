@@ -1,19 +1,3 @@
-import {
-  SectionDataResponse,
-  SectionNotFoundErrorResponse,
-  CreateSectionParams,
-  CreateSectionBody,
-  CourseVersion,
-  UpdateSectionParams,
-  UpdateSectionBody,
-  MoveSectionParams,
-  MoveSectionBody,
-  SectionDeletedResponse,
-  DeleteSectionParams,
-} from '#courses/classes/index.js';
-import {SectionService} from '#courses/services/SectionService.js';
-import {BadRequestErrorResponse} from '#shared/index.js';
-
 import {instanceToPlain} from 'class-transformer';
 import {injectable, inject} from 'inversify';
 import {
@@ -30,6 +14,21 @@ import {
 } from 'routing-controllers';
 import {ResponseSchema} from 'routing-controllers-openapi';
 import {COURSES_TYPES} from '#courses/types.js';
+import {CourseVersion} from '#courses/classes/transformers/CourseVersion.js';
+import {
+  SectionDataResponse,
+  SectionNotFoundErrorResponse,
+  CreateSectionParams,
+  CreateSectionBody,
+  UpdateSectionParams,
+  UpdateSectionBody,
+  MoveSectionParams,
+  MoveSectionBody,
+  SectionDeletedResponse,
+  DeleteSectionParams,
+} from '#courses/classes/validators/SectionValidators.js';
+import {SectionService} from '#courses/services/SectionService.js';
+import {BadRequestErrorResponse} from '#root/shared/middleware/errorHandler.js';
 @injectable()
 @JsonController('/courses')
 export class SectionController {

@@ -1,15 +1,3 @@
-import {
-  IQuestionParameter,
-  ILotItem,
-  ILotOrder,
-  IQuestion,
-  QuestionType,
-  ISOLSolution,
-  ISMLSolution,
-  IOTLSolution,
-  INATSolution,
-  IDESSolution,
-} from '#shared/index.js';
 import {Type} from 'class-transformer';
 import {
   IsNotEmpty,
@@ -28,6 +16,18 @@ import {
 } from 'class-validator';
 import {ObjectId} from 'mongodb';
 import {NATQuestion} from '../transformers/Question.js';
+import {
+  IDESSolution,
+  ILotItem,
+  ILotOrder,
+  INATSolution,
+  IOTLSolution,
+  IQuestion,
+  IQuestionParameter,
+  ISMLSolution,
+  ISOLSolution,
+  QuestionType,
+} from '#root/shared/interfaces/quiz.js';
 
 class QuestionParameter implements IQuestionParameter {
   @IsNotEmpty()

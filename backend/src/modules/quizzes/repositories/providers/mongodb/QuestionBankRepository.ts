@@ -1,5 +1,7 @@
+import {MongoDatabase} from '#root/shared/database/providers/mongo/MongoDatabase.js';
+import {IQuestionBank} from '#root/shared/interfaces/quiz.js';
 import {GLOBAL_TYPES} from '#root/types.js';
-import {IQuestionBank, MongoDatabase} from '#shared/index.js';
+
 import {injectable, inject} from 'inversify';
 import {Collection, ClientSession} from 'mongodb';
 

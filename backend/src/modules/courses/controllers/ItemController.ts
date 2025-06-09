@@ -1,19 +1,3 @@
-import {
-  ItemDataResponse,
-  ItemNotFoundErrorResponse,
-  CreateItemParams,
-  CreateItemBody,
-  ReadAllItemsParams,
-  UpdateItemParams,
-  UpdateItemBody,
-  DeletedItemResponse,
-  DeleteItemParams,
-  MoveItemParams,
-  MoveItemBody,
-  GetItemParams,
-} from '#courses/classes/index.js';
-import {ItemService} from '#courses/services/ItemService.js';
-import {ProgressService, USERS_TYPES} from '#users/index.js';
 import {inject, injectable} from 'inversify';
 import {
   Authorized,
@@ -31,7 +15,24 @@ import {
 import {ResponseSchema} from 'routing-controllers-openapi';
 import {COURSES_TYPES} from '#courses/types.js';
 import {BadRequestErrorResponse} from '#shared/middleware/errorHandler.js';
-import {IUser} from '#shared/index.js';
+import {
+  ItemDataResponse,
+  ItemNotFoundErrorResponse,
+  CreateItemParams,
+  CreateItemBody,
+  ReadAllItemsParams,
+  UpdateItemParams,
+  UpdateItemBody,
+  DeletedItemResponse,
+  DeleteItemParams,
+  MoveItemParams,
+  MoveItemBody,
+  GetItemParams,
+} from '#courses/classes/validators/ItemValidators.js';
+import {ItemService} from '#courses/services/ItemService.js';
+import {IUser} from '#root/shared/interfaces/models.js';
+import {ProgressService} from '#users/services/ProgressService.js';
+import {USERS_TYPES} from '#users/types.js';
 
 @injectable()
 @JsonController('/courses')

@@ -1,33 +1,30 @@
-import {QuizItem} from '#courses/index.js';
-import {
-  BaseQuestion,
-  UserQuizMetrics,
-  Attempt,
-  Submission,
-} from '#quizzes/classes/index.js';
-import {
-  IQuestionDetails,
-  IGradingResult,
-  IQuestionAnswer,
-  IQuestionAnswerFeedback,
-} from '#quizzes/interfaces/grading.js';
-import {IQuestionRenderView} from '#quizzes/question-processing/index.js';
-import {QuestionProcessor} from '#quizzes/question-processing/QuestionProcessor.js';
-import {
-  QuizRepository,
-  AttemptRepository,
-  SubmissionRepository,
-  UserQuizMetricsRepository,
-} from '#quizzes/repositories/index.js';
-import {generateRandomParameterMap} from '#quizzes/utils/index.js';
-import {GLOBAL_TYPES} from '#root/types.js';
-import {BaseService, MongoDatabase} from '#shared/index.js';
 import {injectable, inject} from 'inversify';
 import {ClientSession, ObjectId} from 'mongodb';
 import {NotFoundError, BadRequestError} from 'routing-controllers';
 import {QuestionBankService} from './QuestionBankService.js';
 import {QuestionService} from './QuestionService.js';
 import {QUIZZES_TYPES} from '../types.js';
+import {QuizItem} from '#courses/classes/transformers/Item.js';
+import {Attempt} from '#quizzes/classes/transformers/Attempt.js';
+import {BaseQuestion} from '#quizzes/classes/transformers/Question.js';
+import {Submission} from '#quizzes/classes/transformers/Submission.js';
+import {UserQuizMetrics} from '#quizzes/classes/transformers/UserQuizMetrics.js';
+import {
+  IQuestionDetails,
+  IGradingResult,
+  IQuestionAnswer,
+  IQuestionAnswerFeedback,
+} from '#quizzes/interfaces/grading.js';
+import {QuestionProcessor} from '#quizzes/question-processing/QuestionProcessor.js';
+import {AttemptRepository} from '#quizzes/repositories/providers/mongodb/AttemptRepository.js';
+import {QuizRepository} from '#quizzes/repositories/providers/mongodb/QuizRepository.js';
+import {SubmissionRepository} from '#quizzes/repositories/providers/mongodb/SubmissionRepository.js';
+import {UserQuizMetricsRepository} from '#quizzes/repositories/providers/mongodb/UserQuizMetricsRepository.js';
+import {generateRandomParameterMap} from '#quizzes/utils/functions/generateRandomParameterMap.js';
+import {BaseService} from '#root/shared/classes/BaseService.js';
+import {MongoDatabase} from '#root/shared/database/providers/mongo/MongoDatabase.js';
+import {GLOBAL_TYPES} from '#root/types.js';
+import {IQuestionRenderView} from '#quizzes/question-processing/renderers/interfaces/RenderViews.js';
 @injectable()
 class AttemptService extends BaseService {
   constructor(

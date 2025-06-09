@@ -42,10 +42,3 @@ export const coursesModuleOptions: RoutingControllersOptions = {
   },
   validation: true,
 };
-
-export * from './classes/index.js';
-export * from './controllers/index.js';
-export * from './services/index.js';
-export * from './utils/index.js';
-export * from './container.js';
-export * from './types.js';

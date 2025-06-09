@@ -1,4 +1,4 @@
-import {ISection, ICourseVersion} from '#shared/index.js';
+import {ICourseVersion, ISection} from '#root/shared/interfaces/models.js';
 import {
   IsNotEmpty,
   IsString,

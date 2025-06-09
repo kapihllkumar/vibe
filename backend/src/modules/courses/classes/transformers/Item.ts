@@ -1,16 +1,19 @@
 import {calculateNewOrder} from '#courses/utils/calculateNewOrder.js';
+
+import {Expose, Transform, Type} from 'class-transformer';
+import {ObjectId} from 'mongodb';
+
 import {
   ObjectIdToString,
   StringToObjectId,
+} from '#root/shared/constants/transformerConstants.js';
+import {
   ID,
   ItemType,
   IQuizDetails,
   IVideoDetails,
   IBlogDetails,
-} from '#shared/index.js';
-import {Expose, Transform, Type} from 'class-transformer';
-import {ObjectId} from 'mongodb';
-import {CreateItemBody} from '../validators/ItemValidators.js';
+} from '#root/shared/interfaces/models.js';
 
 export type Item = QuizItem | VideoItem | BlogItem;
 
@@ -124,7 +127,7 @@ class ItemBase {
   @Expose()
   itemDetails: Item;
 
-  constructor(itemBody: CreateItemBody, existingItems: ItemRef[]) {
+  constructor(itemBody: any, existingItems: ItemRef[]) {
     this.itemId = new ObjectId();
     const quizDetails = itemBody.quizDetails as IQuizDetails;
     if (itemBody) {

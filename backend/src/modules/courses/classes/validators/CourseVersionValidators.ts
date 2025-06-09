@@ -1,4 +1,4 @@
-import {ICourseVersion} from '#shared/index.js';
+import {ICourseVersion} from '#root/shared/interfaces/models.js';
 import {IsEmpty, IsNotEmpty, IsString, IsMongoId} from 'class-validator';
 import {JSONSchema} from 'class-validator-jsonschema';
 

@@ -1,15 +1,18 @@
-import {SignUpBody, User, ChangePasswordBody} from '#auth/classes/index.js';
 import {IAuthService} from '#auth/interfaces/IAuthService.js';
 import {GLOBAL_TYPES} from '#root/types.js';
-import {
-  BaseService,
-  IUserRepository,
-  MongoDatabase,
-  IUser,
-} from '#shared/index.js';
+
 import {injectable, inject} from 'inversify';
 import {InternalServerError} from 'routing-controllers';
 import admin from 'firebase-admin';
+import {User} from '#auth/classes/transformers/User.js';
+import {
+  SignUpBody,
+  ChangePasswordBody,
+} from '#auth/classes/validators/AuthValidators.js';
+import {BaseService} from '#root/shared/classes/BaseService.js';
+import {IUserRepository} from '#root/shared/database/interfaces/IUserRepository.js';
+import {MongoDatabase} from '#root/shared/database/providers/mongo/MongoDatabase.js';
+import {IUser} from '#root/shared/interfaces/models.js';
 
 /**
  * Custom error thrown during password change operations.

@@ -1,4 +1,3 @@
-import {ID, EnrollmentRole, EnrollmentStatus} from '#shared/index.js';
 import {Type} from 'class-transformer';
 import {
   IsMongoId,
@@ -12,6 +11,11 @@ import {
 } from 'class-validator';
 import {JSONSchema} from 'class-validator-jsonschema';
 import {ProgressDataResponse} from './ProgressValidators.js';
+import {
+  EnrollmentRole,
+  EnrollmentStatus,
+  ID,
+} from '#root/shared/interfaces/models.js';
 
 export class EnrollmentParams {
   @JSONSchema({

@@ -9,9 +9,10 @@ import {
   MoveModuleBody,
   ModuleDeletedResponse,
   DeleteModuleParams,
-} from '#courses/classes/index.js';
+} from '#courses/classes/validators/ModuleValidators.js';
 import {ModuleService} from '#courses/services/ModuleService.js';
-import {BadRequestErrorResponse} from '#shared/index.js';
+import {COURSES_TYPES} from '#courses/types.js';
+import {BadRequestErrorResponse} from '#root/shared/middleware/errorHandler.js';
 import {instanceToPlain} from 'class-transformer';
 import {injectable, inject} from 'inversify';
 import {
@@ -25,7 +26,7 @@ import {
   Delete,
 } from 'routing-controllers';
 import {ResponseSchema} from 'routing-controllers-openapi';
-import {COURSES_TYPES} from '#courses/index.js';
+
 @injectable()
 @JsonController('/courses')
 export class ModuleController {

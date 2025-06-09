@@ -2,7 +2,6 @@
 
 import {authModuleOptions} from '#auth/index.js';
 import {coursesModuleOptions} from '#courses/index.js';
-import {docsModuleOptions} from '#docs/index.js';
 import {usersModuleOptions} from '#users/index.js';
 import {validationMetadatasToSchemas} from 'class-validator-jsonschema';
 import {injectable} from 'inversify';
@@ -29,7 +28,6 @@ export class OpenApiSpecService {
       ...(authModuleOptions.controllers || []),
       ...(coursesModuleOptions.controllers || []),
       ...(usersModuleOptions.controllers || []),
-      ...(docsModuleOptions.controllers || []),
     ];
 
     // Create combined routing-controllers options

@@ -1,9 +1,10 @@
 import {IAttempt} from '#quizzes/interfaces/grading.js';
-import {MongoDatabase} from '#shared/index.js';
+
 import {injectable, inject} from 'inversify';
 import {Collection, ClientSession} from 'mongodb';
 import {InternalServerError} from 'routing-controllers';
 import {GLOBAL_TYPES} from '#root/types.js';
+import {MongoDatabase} from '#root/shared/database/providers/mongo/MongoDatabase.js';
 @injectable()
 class AttemptRepository {
   private attemptCollection: Collection<IAttempt>;

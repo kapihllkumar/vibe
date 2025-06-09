@@ -1,4 +1,4 @@
-import {ICourse, ID} from '#shared/index.js';
+import {ICourse, ID} from '#root/shared/interfaces/models.js';
 import {
   IsNotEmpty,
   IsString,

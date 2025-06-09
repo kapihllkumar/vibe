@@ -1,6 +1,6 @@
-import {BaseQuestion} from '#quizzes/classes/index.js';
-import {ParameterMap} from '../tag-parser/index.js';
+import {BaseQuestion} from '#quizzes/classes/transformers/Question.js';
 import {TagParser} from '../tag-parser/TagParser.js';
+import {ParameterMap} from '../tag-parser/tags/Tag.js';
 import {IQuestionRenderView} from './interfaces/RenderViews.js';
 
 class BaseQuestionRenderer {

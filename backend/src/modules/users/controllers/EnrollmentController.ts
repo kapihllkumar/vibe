@@ -1,10 +1,12 @@
 import {
-  EnrollmentParams,
-  EnrollUserResponse,
-  EnrollmentResponse,
   EnrolledUserResponse,
+  EnrollUserResponse,
+} from '#users/classes/transformers/Enrollment.js';
+import {
+  EnrollmentParams,
   EnrollmentBody,
-} from '#users/classes/index.js';
+  EnrollmentResponse,
+} from '#users/classes/validators/EnrollmentValidators.js';
 import {EnrollmentService} from '#users/services/EnrollmentService.js';
 import {USERS_TYPES} from '#users/types.js';
 import {injectable, inject} from 'inversify';

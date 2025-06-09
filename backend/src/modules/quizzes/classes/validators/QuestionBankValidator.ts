@@ -1,4 +1,5 @@
-import {IQuestionBank, ID} from '#shared/index.js';
+import {ID} from '#root/shared/interfaces/models.js';
+import {IQuestionBank} from '#root/shared/interfaces/quiz.js';
 import {
   IsMongoId,
   IsOptional,

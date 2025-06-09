@@ -1,4 +1,4 @@
-import {ParameterMap} from '#quizzes/question-processing/index.js';
+import {ParameterMap} from '#quizzes/question-processing/tag-parser/tags/Tag.js';
 import {ObjectId} from 'mongodb';
 
 interface ISOLAnswer {
