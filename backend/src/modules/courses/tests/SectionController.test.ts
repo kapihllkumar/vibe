@@ -8,6 +8,7 @@ import {coursesContainerModule} from '../container';
 import {sharedContainerModule} from '../../../container';
 import {jest} from '@jest/globals';
 import { usersContainerModule } from '#users/container.js';
+import { HttpErrorHandler } from '../../../shared/middleware/errorHandler';
 
 describe('Section Controller Integration Tests', () => {
   const App = Express();
@@ -19,6 +20,7 @@ describe('Section Controller Integration Tests', () => {
     await container.load(sharedContainerModule,
         coursesContainerModule,
         usersContainerModule,);
+        container.bind(HttpErrorHandler).toSelf().inSingletonScope();
     const inversifyAdapter = new InversifyAdapter(container);
     useContainer(inversifyAdapter);
     app = useExpressServer(App, coursesModuleOptions);

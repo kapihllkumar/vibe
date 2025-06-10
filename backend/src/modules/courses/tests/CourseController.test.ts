@@ -3,11 +3,12 @@ import Express from 'express';
 import {useExpressServer} from 'routing-controllers';
 import {
   coursesModuleOptions,
-  CreateCourseBody,
   setupCoursesContainer,
 } from '..';
 import {faker} from '@faker-js/faker';
 import {jest} from '@jest/globals';
+import { CreateCourseBody } from '../classes/validators/CourseValidators.js';
+
 
 describe('Course Controller Integration Tests', () => {
   const App = Express();

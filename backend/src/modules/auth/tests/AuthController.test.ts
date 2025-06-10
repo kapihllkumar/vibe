@@ -2,7 +2,8 @@ import request from 'supertest';
 import Express from 'express';
 import {useExpressServer} from 'routing-controllers';
 // TODO: Update the import paths below to your project's structure
-import {authModuleOptions, setupAuthContainer, SignUpBody} from '../index';
+import {setupAuthContainer, authModuleOptions} from '../index.js';
+import {SignUpBody} from '../classes/validators/AuthValidators.js';
 import {faker} from '@faker-js/faker';
 import {jest} from '@jest/globals';
 

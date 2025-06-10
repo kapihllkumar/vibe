@@ -1,4 +1,4 @@
-import {coursesModuleOptions, CreateItemBody} from '../';
+import {coursesModuleOptions} from '../';
 import {useExpressServer, useContainer} from 'routing-controllers';
 import Express from 'express';
 import request from 'supertest';
@@ -11,6 +11,9 @@ import {faker} from '@faker-js/faker';
 import {usersContainerModule} from '../../users/container';
 import {authContainerModule} from '../../auth/container';
 import {jest} from '@jest/globals';
+import { CreateItemBody } from '../classes/validators/ItemValidators.js';
+import { HttpErrorHandler } from '../../../shared/middleware/errorHandler.js';
+
 
 describe('Course Version Controller Integration Tests', () => {
   const App = Express();
@@ -24,6 +27,7 @@ describe('Course Version Controller Integration Tests', () => {
       usersContainerModule,
       coursesContainerModule,
     );
+    container.bind(HttpErrorHandler).toSelf().inSingletonScope();
     const inversifyAdapter = new InversifyAdapter(container);
     useContainer(inversifyAdapter);
     app = useExpressServer(App, coursesModuleOptions);

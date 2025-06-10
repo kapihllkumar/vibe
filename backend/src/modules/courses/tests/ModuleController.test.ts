@@ -5,11 +5,12 @@ import {
 } from 'routing-controllers';
 import Express from 'express';
 import request from 'supertest';
-import {InversifyAdapter} from '../../../inversify-adapter';
+import {InversifyAdapter} from '../../../inversify-adapter.js';
 import {Container} from 'inversify';
-import {coursesContainerModule} from '../container';
-import {sharedContainerModule} from '../../../container';
+import {coursesContainerModule} from '../container.js';
+import {sharedContainerModule} from '../../../container.js';
 import {jest} from '@jest/globals';
+import { HttpErrorHandler } from '../../../shared/middleware/errorHandler.js';
 
 describe('Module Controller Integration Tests', () => {
   const App = Express();
@@ -19,7 +20,9 @@ describe('Module Controller Integration Tests', () => {
     process.env.NODE_ENV = 'test';
     const container = new Container();
     await container.load(sharedContainerModule, coursesContainerModule);
+    container.bind(HttpErrorHandler).toSelf().inSingletonScope();
     const inversifyAdapter = new InversifyAdapter(container);
+
     useContainer(inversifyAdapter);
     app = useExpressServer(App, coursesModuleOptions);
   });

@@ -5,30 +5,28 @@ import {
   useContainer,
   useExpressServer,
 } from 'routing-controllers';
-import {authModuleOptions, SignUpBody} from '../../auth';
-import {
-  Course,
-  coursesModuleOptions,
-  CreateCourseBody,
-  CreateCourseVersionBody,
-  CreateCourseVersionParams,
-  CreateItemBody,
-  CreateItemParams,
-  CreateModuleBody,
-  CreateModuleParams,
-  CreateSectionBody,
-  CreateSectionParams,
-} from '../../courses';
-import {EnrollmentParams, usersModuleOptions} from '..';
+
+import {usersModuleOptions} from '..';
 import {faker} from '@faker-js/faker';
 import {Container} from 'inversify';
-import {sharedContainerModule} from '../../../container';
-import {authContainerModule} from '../../auth/container';
-import {usersContainerModule} from '../container';
-import {coursesContainerModule} from '../../courses/container';
-import {InversifyAdapter} from '../../../inversify-adapter';
-import {ItemType} from '../../../shared/interfaces/models';
+import {sharedContainerModule} from '../../../container.js';
+import {authContainerModule} from '../../auth/container.js';
+import {usersContainerModule} from '../container.js';
+import {coursesContainerModule} from '../../courses/container.js';
+import {InversifyAdapter} from '../../../inversify-adapter.js';
+import {ItemType} from '../../../shared/interfaces/models.js';
 import {jest} from '@jest/globals';
+import { coursesModuleOptions } from '../../courses/index.js';
+import { authModuleOptions } from '../../auth/index.js';
+import { CreateCourseVersionBody, CreateCourseVersionParams } from '../../courses/classes/validators/CourseVersionValidators.js';
+import { Course } from '../../courses/classes/transformers/index.js';
+import { CreateCourseBody } from '../../courses/classes/validators/CourseValidators.js';
+import { SignUpBody } from '../../auth/classes/validators/AuthValidators.js';
+import { CreateModuleBody, CreateModuleParams } from '../../courses/classes/validators/ModuleValidators.js';
+import { CreateSectionBody, CreateSectionParams } from '../../courses/classes/validators/SectionValidators.js';
+import { CreateItemBody, CreateItemParams } from '../../courses/classes/validators/ItemValidators.js';
+import { EnrollmentParams } from './utils/createEnrollment.js';
+import { HttpErrorHandler } from '../../../shared/middleware/errorHandler.js';
 
 describe('Enrollment Controller Integration Tests', () => {
   const appInstance = Express();
@@ -44,6 +42,7 @@ describe('Enrollment Controller Integration Tests', () => {
       usersContainerModule,
       coursesContainerModule,
     );
+    container.bind(HttpErrorHandler).toSelf().inSingletonScope();
     const inversifyAdapter = new InversifyAdapter(container);
     useContainer(inversifyAdapter);
 

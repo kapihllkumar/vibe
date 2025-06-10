@@ -9,10 +9,6 @@ import {MongoDatabase} from '../../../shared/database/providers/mongo/MongoDatab
 import {authModuleOptions} from '../../auth';
 import {coursesModuleOptions} from '../../courses';
 import {
-  ResetCourseProgressBody,
-  StartItemBody,
-  StopItemBody,
-  UpdateProgressBody,
   usersModuleOptions,
 } from '..';
 
@@ -36,6 +32,8 @@ import {authContainerModule} from '../../auth/container';
 import {coursesContainerModule} from '../../courses/container';
 import {usersContainerModule} from '../container';
 import {jest} from '@jest/globals';
+import { ResetCourseProgressBody, StartItemBody, StopItemBody, UpdateProgressBody } from '../classes/validators/ProgressValidators.js';
+import { HttpErrorHandler } from '../../../shared/middleware/errorHandler.js';
 
 jest.setTimeout(300000); // Set timeout to 30 seconds for the tests
 describe('Progress Controller Integration Tests', () => {
@@ -55,6 +53,7 @@ describe('Progress Controller Integration Tests', () => {
       usersContainerModule,
       coursesContainerModule,
     );
+    container.bind(HttpErrorHandler).toSelf().inSingletonScope();
     const inversifyAdapter = new InversifyAdapter(container);
     useContainer(inversifyAdapter);
 
