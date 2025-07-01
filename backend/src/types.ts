@@ -14,6 +14,8 @@ const TYPES = {
   MailService: Symbol.for('MailService'),
   
   SettingsRepo: Symbol.for('SettingsRepo'),
+  GamifyEngineRepo: Symbol.for('GamifyEngineRepo'),
+  GamifyLayerRepo: Symbol.for('GamifyLayerRepo'),
 
   //Constants
   uri: Symbol.for('dbURI'),
