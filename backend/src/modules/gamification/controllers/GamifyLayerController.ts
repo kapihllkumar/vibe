@@ -10,11 +10,13 @@ import {
   Authorized,
   HttpCode,
 } from 'routing-controllers';
+import { NotFoundError } from 'routing-controllers';
 
 import {EventService, RuleService} from '#gamification/services/index.js';
 import {
   Events,
   EventsBody,
+  ReadEventParams,
   Rule,
   RuleBody,
   UpdateRuleBody,
@@ -52,6 +54,55 @@ export class GamifyLayerController {
   }
 
   @Authorized(['admin', 'instructor'])
+  @Get('/events')
+  async readEvents(): Promise<Events[]> {
+    const events = await this.eventService.readEvents();
+    if (!events || events.length === 0) {
+      throw new NotFoundError('No events found');
+    }
+    return events.map(event => instanceToPlain(event) as Events);
+  }
+
+
+
+  @Authorized(['admin', 'instructor'])
+  @Get('/events/:eventId')
+  async readEvent(@Params() params: ReadEventParams): Promise<Events> {
+    const event = await this.eventService.readEvent(params.eventId);
+    if (!event) {
+      throw new NotFoundError(`Event with ID ${params.eventId} not found`);
+    }
+    return instanceToPlain(event) as Events;
+  }
+
+  @Authorized(['admin', 'instructor'])
+  @Put('/events/:eventId')
+  async updateEvent(
+    @Params() params: ReadEventParams,
+    @Body() body: EventsBody
+  ): Promise<{ status: boolean }> {
+    const eventInstance = new Events(body);
+    const status = await this.eventService.updateEvent(
+      params.eventId,
+      eventInstance 
+    );
+    
+    return { status };
+}
+
+  @Authorized(['admin', 'instructor'])
+  @HttpCode(204)
+  @Delete('/events/:eventId')
+  async deleteEvent(@Params() params: ReadEventParams): Promise<boolean> {
+    const result = await this.eventService.deleteEvent(params.eventId);
+    if (!result) {
+      throw new NotFoundError(`Event with ID ${params.eventId} not found`);
+    }
+    return result;
+  }
+
+
+  @Authorized(['admin', 'instructor'])
   @HttpCode(201)
   @Post('/rules')
   async createRule(@Body() rule: RuleBody): Promise<RuleBody> {
@@ -70,6 +121,10 @@ export class GamifyLayerController {
   async readRules(@Params() params: ReadRulesParams): Promise<Rule[] | null> {
     // Convert string ID to ObjectId
     const rules = await this.ruleService.readRules(params.eventId);
+    if (!rules || rules.length === 0) {
+      throw new NotFoundError('No rules found for this event');
+  }
+
     // Return plain object array if rules exist, otherwise null
     return rules ? rules.map(rule => instanceToPlain(rule) as Rule) : null;
   }
@@ -109,7 +164,7 @@ export class GamifyLayerController {
 
   @Authorized(['admin', 'instructor', 'user'])
   @HttpCode(200)
-  @Post('/eventtrigger/')
+  @Post('/eventtrigger')
   async triggerEvent(
     @Body() body: EventTriggerBody,
   ): Promise<MetricTriggerResponse> {

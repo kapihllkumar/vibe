@@ -42,6 +42,8 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
 
   private initialized = false;
 
+  
+
   // Initialize collections if not already done
   private async init() {
     if (!this.initialized) {
@@ -57,6 +59,32 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
         await this.db.getCollection<UserGameAchievement>(
           'userGameAchievements',
         );
+
+      // Create indexes for better performance
+      try {
+        // userGameMetrics: compound index for fast lookups and updates
+        await this.userMetricCollection.createIndex(
+          { userId: 1, metricId: 1 },
+          { name: 'userId_metricId_compound', background: true }
+        );
+
+        // userGameMetrics: single index for fetching all metrics by user
+        await this.userMetricCollection.createIndex(
+          { userId: 1 },
+          { name: 'userId_single', background: true }
+        );
+
+        // userGameAchievements: index for fetching user achievements
+        await this.userAchievementCollection.createIndex(
+          { userId: 1 },
+          { name: 'userId_achievements', background: true }
+        );
+
+        console.log('GamifyEngineRepository indexes created successfully');
+      } catch (error) {
+        console.error('Error creating indexes in GamifyEngineRepository:', error);
+      }
+
       this.initialized = true;
     }
   }

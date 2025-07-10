@@ -1,6 +1,5 @@
-{
-  "name": "vitest-vibe",
-  "version": "1.0.0",
+  {
+  "version":"1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -13,7 +12,8 @@
     "generate": "plop",
     "test": "vitest --ui",
     "test:watch": "vitest run --watch",
-    "test:ci": "vitest run --coverage --reporter=html"
+    "test:ci": "vitest run --coverage --reporter=html",
+    "lint": "eslint . --ext .js,.ts"
   },
   "imports": {
     "#root/*.js": "./build/*.js",
@@ -121,4 +121,8 @@
     "typedi": "^0.10.0",
     "winston": "^3.17.0"
   }
+<<<<<<< HEAD
 }
+=======
+  }
+>>>>>>> e4326d50 (gamification)

@@ -4,6 +4,7 @@ import {
   UserRepository,
   HttpErrorHandler,
   SettingsRepository,
+  InviteRepository,
 } from '#shared/index.js';
 import {GLOBAL_TYPES} from './types.js';
 import {dbConfig} from './config/db.js';
@@ -40,6 +41,7 @@ export const sharedContainerModule = new ContainerModule(options => {
     .bind(GLOBAL_TYPES.GamifyLayerRepo)
     .to(GamifyLayerRepository)
     .inSingletonScope();
+  options.bind(GLOBAL_TYPES.InviteRepo).to(InviteRepository).inSingletonScope();
 
   // Other
   options.bind(HttpErrorHandler).toSelf().inSingletonScope();

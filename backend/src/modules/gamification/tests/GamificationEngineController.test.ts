@@ -17,6 +17,7 @@ import request from 'supertest';
 import {describe, it, beforeAll, afterAll, expect, vi} from 'vitest';
 import {FirebaseAuthService} from '#root/modules/auth/services/FirebaseAuthService.js';
 import {faker} from '@faker-js/faker';
+import { coursesContainerModule } from '#root/modules/courses/container.js';
 
 describe('GamificationEngineController', () => {
   const appInstance = Express();
@@ -32,7 +33,10 @@ describe('GamificationEngineController', () => {
       GamificationContainerModule,
       usersContainerModule,
       authContainerModule,
+      coursesContainerModule
     );
+
+
 
     const inversifyAdapter = new InversifyAdapter(container);
     useContainer(inversifyAdapter);
@@ -76,8 +80,9 @@ describe('GamificationEngineController', () => {
     };
 
     const signupRes = await request(app).post('/auth/signup').send(signUpBody);
-
+    console.log(signupRes)
     expect(signupRes.status).toBe(201);
+    
     userId = signupRes.body;
     expect(userId).toBeTruthy();
     vi.spyOn(
@@ -571,6 +576,7 @@ describe('GamificationEngineController', () => {
         metricId: metricId, // This should be a valid metric ID.
         value: 100,
         lastUpdated: '',
+        
       };
 
       const res = await request(app)
