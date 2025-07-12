@@ -28,6 +28,7 @@ import {
 import {GAMIFICATION_TYPES} from '../types.js';
 import {instanceToPlain} from 'class-transformer';
 import {EventTrigger} from '../classes/transformers/EventTrigger.js';
+import {ClientSession} from 'mongodb';
 
 @injectable()
 @JsonController('/gamification')
@@ -179,4 +180,15 @@ export class GamifyLayerController {
     // Return the response from the service
     return instanceToPlain(response) as MetricTriggerResponse;
   }
+
+  @Authorized(['admin', 'instructor'])
+  @HttpCode(204)
+  @Delete('/rules/:eventId')
+  async deleteRulesByEventId(@Params() params: ReadRulesParams): Promise<boolean> {
+    const result = await this.ruleService.deleteRulesByEventId(params.eventId);
+    if (!result) {
+      throw new NotFoundError(`No rules found for event ID ${params.eventId}`);
+    }
+    return result;
+} 
 }

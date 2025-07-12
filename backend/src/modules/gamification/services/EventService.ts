@@ -13,6 +13,7 @@ import jsonLogic from 'json-logic-js';
 import {GAMIFICATION_TYPES} from '../types.js';
 import {MetricTriggerService} from './MetricTriggerService.js';
 import {EventTrigger} from '../classes/transformers/EventTrigger.js';
+import {RuleService} from '#gamification/services/RuleService.js';
 
 @injectable()
 export class EventService extends BaseService {
@@ -23,6 +24,8 @@ export class EventService extends BaseService {
     private readonly gamifyLayerRepo: IGamifyLayerRepository,
     @inject(GAMIFICATION_TYPES.MetricTriggerService)
     private readonly metricTriggerService: MetricTriggerService,
+    @inject(GAMIFICATION_TYPES.RuleService)
+    private readonly ruleService: RuleService,
   ) {
     super(mongodatabase);
   }
@@ -96,6 +99,8 @@ export class EventService extends BaseService {
         throw new NotFoundError(`Event with ID ${eventId} not found`);
       }
 
+      await this.gamifyLayerRepo.deleteRulesByEventId(objectId,session);
+      
       const deleteEventResult = await this.gamifyLayerRepo.deleteEvent(
         objectId,
         session
@@ -106,12 +111,6 @@ export class EventService extends BaseService {
   }
 
 
-
-  
-
-  
-  
-  
 
   async eventTrigger(trigger: EventTrigger): Promise<MetricTriggerResponse> {
     // This method triggers an event for a user with the given payload.

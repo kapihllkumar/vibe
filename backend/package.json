@@ -23,11 +23,7 @@
     "#users/*.js": "./build/modules/users/*.js",
     "#quizzes/*.js": "./build/modules/quizzes/*.js",
     "#settings/*.js": "./build/modules/settings/*.js",
-<<<<<<< HEAD
-    "#temp/*.js": "./build/modules/temp/*.js"
-=======
     "#gamification/*.js": "./build/modules/gamification/*.js"
->>>>>>> 16e7e4fe (feat(gamification): Initial commit of Badge/Achievement system.)
   },
   "type": "module",
   "keywords": [],
@@ -121,8 +117,4 @@
     "typedi": "^0.10.0",
     "winston": "^3.17.0"
   }
-<<<<<<< HEAD
-}
-=======
   }
->>>>>>> e4326d50 (gamification)

@@ -1,5 +1,3 @@
-
-
 const GAMIFICATION_TYPES = {
   // Services
   MetricService: Symbol.for('MetricService'),
@@ -18,10 +16,6 @@ const GAMIFICATION_TYPES = {
   GamifyLayerRepository: Symbol.for('GamifyLayerRepository'),
 };
 
-<<<<<<< HEAD
-export {TYPES as GAMIFICATION_TYPES};
->>>>>>> 16e7e4fe (feat(gamification): Initial commit of Badge/Achievement system.)
-=======
 export {GAMIFICATION_TYPES};
 
 const QUIZZES_TYPES = {
@@ -29,4 +23,3 @@ const QUIZZES_TYPES = {
 };
 
 export { QUIZZES_TYPES };
->>>>>>> e4326d50 (gamification)

@@ -211,4 +211,18 @@ export class GamifyLayerRepository implements IGamifyLayerRepository {
 
     return result;
   }
+
+  async deleteRulesByEventId(
+    eventId: ObjectId,
+    session: ClientSession,
+  ): Promise<DeleteResult | null> {
+    await this.init();
+
+    const result = await this.rulesCollection.deleteMany(
+      { eventId },
+      { session },
+    );
+
+    return result;
+}
 }
