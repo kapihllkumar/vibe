@@ -18,7 +18,6 @@ import {authContainerModule} from '#root/modules/auth/container.js';
 import {authModuleOptions} from '#root/modules/auth/index.js';
 import {InversifyAdapter} from '#root/inversify-adapter.js';
 import {FirebaseAuthService} from '#root/modules/auth/services/FirebaseAuthService.js';
-import {GAMIFICATION_TYPES} from '../types.js';
 
 describe('GamifyLayerController', () => {
   const appInstance = Express();
