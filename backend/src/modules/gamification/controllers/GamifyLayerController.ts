@@ -9,10 +9,10 @@ import {
   Delete,
   Authorized,
   HttpCode,
+  NotFoundError,
 } from 'routing-controllers';
-import { NotFoundError } from 'routing-controllers';
 
-import {EventService, RuleService} from '#gamification/services/index.js';
+import {eventService, ruleService} from '#gamification/services/index.js';
 import {
   Events,
   EventsBody,
@@ -26,19 +26,23 @@ import {
   MetricTriggerResponse,
 } from '#gamification/classes/index.js';
 import {GAMIFICATION_TYPES} from '../types.js';
-import {instanceToPlain} from 'class-transformer';
 import {EventTrigger} from '../classes/transformers/EventTrigger.js';
-import {ClientSession} from 'mongodb';
+import {OpenAPI} from 'routing-controllers-openapi';
 
+@OpenAPI({
+  tags: ['GamifyLayer'],
+})
 @injectable()
-@JsonController('/gamification')
+@JsonController('/gamification', {
+  transformResponse: true,
+})
 export class GamifyLayerController {
   constructor(
     @inject(GAMIFICATION_TYPES.EventService)
-    private readonly eventService: EventService,
+    private readonly eventService: eventService,
 
     @inject(GAMIFICATION_TYPES.RuleService)
-    private readonly ruleService: RuleService,
+    private readonly ruleService: ruleService,
   ) {}
 
   @Authorized(['admin', 'instructor'])
@@ -51,17 +55,17 @@ export class GamifyLayerController {
     const createdEvent = await this.eventService.createEvent(eventInstance);
 
     // Return the created event
-    return instanceToPlain(createdEvent) as Events;
+    return createdEvent;
   }
 
-  @Authorized(['admin', 'instructor'])
+    @Authorized(['admin', 'instructor'])
   @Get('/events')
   async readEvents(): Promise<Events[]> {
     const events = await this.eventService.readEvents();
     if (!events || events.length === 0) {
       throw new NotFoundError('No events found');
     }
-    return events.map(event => instanceToPlain(event) as Events);
+    return events;
   }
 
 
@@ -73,7 +77,7 @@ export class GamifyLayerController {
     if (!event) {
       throw new NotFoundError(`Event with ID ${params.eventId} not found`);
     }
-    return instanceToPlain(event) as Events;
+    return event;
   }
 
   @Authorized(['admin', 'instructor'])
@@ -102,7 +106,6 @@ export class GamifyLayerController {
     return result;
   }
 
-
   @Authorized(['admin', 'instructor'])
   @HttpCode(201)
   @Post('/rules')
@@ -114,7 +117,7 @@ export class GamifyLayerController {
     const createdRule = await this.ruleService.createRule(ruleInstance);
 
     // Return the created rule
-    return instanceToPlain(createdRule) as RuleBody;
+    return createdRule;
   }
 
   @Authorized(['admin', 'instructor'])
@@ -122,12 +125,8 @@ export class GamifyLayerController {
   async readRules(@Params() params: ReadRulesParams): Promise<Rule[] | null> {
     // Convert string ID to ObjectId
     const rules = await this.ruleService.readRules(params.eventId);
-    if (!rules || rules.length === 0) {
-      throw new NotFoundError('No rules found for this event');
-  }
-
     // Return plain object array if rules exist, otherwise null
-    return rules ? rules.map(rule => instanceToPlain(rule) as Rule) : null;
+    return rules;
   }
 
   @Authorized(['admin', 'instructor'])
@@ -140,7 +139,7 @@ export class GamifyLayerController {
     const rule = await this.ruleService.readRule(ruleId);
 
     // Return plain object
-    return instanceToPlain(rule) as Rule;
+    return rule;
   }
 
   @Authorized(['admin', 'instructor'])
@@ -165,7 +164,7 @@ export class GamifyLayerController {
 
   @Authorized(['admin', 'instructor', 'user'])
   @HttpCode(200)
-  @Post('/eventtrigger')
+  @Post('/eventtrigger/')
   async triggerEvent(
     @Body() body: EventTriggerBody,
   ): Promise<MetricTriggerResponse> {
@@ -178,7 +177,7 @@ export class GamifyLayerController {
     const response = await this.eventService.eventTrigger(eventTrigger);
 
     // Return the response from the service
-    return instanceToPlain(response) as MetricTriggerResponse;
+    return response;
   }
 
   @Authorized(['admin', 'instructor'])

@@ -42,8 +42,6 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
 
   private initialized = false;
 
-  
-
   // Initialize collections if not already done
   private async init() {
     if (!this.initialized) {
@@ -60,7 +58,6 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
           'userGameAchievements',
         );
 
-      // Create indexes for better performance
       try {
         // userGameMetrics: compound index for fast lookups and updates
         await this.userMetricCollection.createIndex(
@@ -84,7 +81,6 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
       } catch (error) {
         console.error('Error creating indexes in GamifyEngineRepository:', error);
       }
-
       this.initialized = true;
     }
   }
@@ -293,6 +289,40 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
     }
   }
 
+  async createUserGameMetrics(
+    userGameMetrics: IUserGameMetric[],
+    session?: ClientSession,
+  ): Promise<IUserGameMetric[] | null> {
+    await this.init();
+
+    const bulkOps = userGameMetrics.map(metric => ({
+      updateOne: {
+        filter: {
+          userId: metric.userId,
+          metricId: metric.metricId,
+        },
+        update: {
+          $setOnInsert: metric,
+        },
+        upsert: true,
+      },
+    }));
+
+    const result = await this.userMetricCollection.bulkWrite(bulkOps, {
+      session,
+    });
+
+    const upsertedIds = Object.values(result.upsertedIds);
+
+    if (upsertedIds.length > 0) {
+      const createdMetrics = await this.userMetricCollection
+        .find({_id: {$in: upsertedIds}}, {session})
+        .toArray();
+
+      return createdMetrics;
+    }
+  }
+
   // Get all game metrics for a user
   async readAllUserGameMetric(
     userId: ObjectId,
@@ -316,7 +346,7 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
     session?: ClientSession,
   ): Promise<IUserGameMetric | null> {
     await this.init();
-
+    // We need to use get-create pattern here to ensure that we do lazy loading of the user metric.
     const userMetric = await this.userMetricCollection.findOne(
       {userId: userId, metricId: gameMetricId},
       {session},
@@ -356,6 +386,25 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
 
     const result = await this.userMetricCollection.deleteOne(
       {userId: userId, metricId: gameMetricId},
+      {session},
+    );
+
+    if (result.acknowledged) {
+      return result;
+    }
+  }
+
+  // Delete a user's game metric by its ID
+  async deleteUserGameMetricById(
+    metricId: ObjectId,
+    session?: ClientSession,
+  ): Promise<DeleteResult | null> {
+    await this.init();
+
+    const result = await this.userMetricCollection.deleteMany(
+      {
+        metricId: metricId,
+      },
       {session},
     );
 
@@ -516,7 +565,7 @@ export class GamifyEngineRepository implements IGamifyEngineRepository {
             metricId: metric.metricId,
           },
           update: {$inc: {value: metric.value}},
-          upsert: false,
+          upsert: true, // Create if it doesn't exist
         },
       };
     });

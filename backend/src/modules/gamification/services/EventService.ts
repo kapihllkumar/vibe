@@ -11,21 +11,21 @@ import {plainToInstance} from 'class-transformer';
 import {ObjectId} from 'mongodb';
 import jsonLogic from 'json-logic-js';
 import {GAMIFICATION_TYPES} from '../types.js';
-import {MetricTriggerService} from './MetricTriggerService.js';
+import {metricTriggerService} from './MetricTriggerService.js';
 import {EventTrigger} from '../classes/transformers/EventTrigger.js';
-import {RuleService} from '#gamification/services/RuleService.js';
+import {ruleService} from '#gamification/services/RuleService.js';
 
 @injectable()
-export class EventService extends BaseService {
+export class eventService extends BaseService {
   constructor(
     @inject(GLOBAL_TYPES.Database)
     private readonly mongodatabase: MongoDatabase,
     @inject(GLOBAL_TYPES.GamifyLayerRepo)
     private readonly gamifyLayerRepo: IGamifyLayerRepository,
     @inject(GAMIFICATION_TYPES.MetricTriggerService)
-    private readonly metricTriggerService: MetricTriggerService,
+    private readonly metricTriggerService: metricTriggerService,
     @inject(GAMIFICATION_TYPES.RuleService)
-    private readonly ruleService: RuleService,
+    private readonly ruleService: ruleService,
   ) {
     super(mongodatabase);
   }

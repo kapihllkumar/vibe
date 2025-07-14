@@ -16,10 +16,9 @@ const GAMIFICATION_TYPES = {
   GamifyLayerRepository: Symbol.for('GamifyLayerRepository'),
 };
 
-export {GAMIFICATION_TYPES};
-
 const QUIZZES_TYPES = {
   SubmissionRepo: Symbol.for('SubmissionRepository')
 };
+export {GAMIFICATION_TYPES,QUIZZES_TYPES};
 
-export { QUIZZES_TYPES };
+

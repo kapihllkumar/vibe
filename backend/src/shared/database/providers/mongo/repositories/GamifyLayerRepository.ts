@@ -95,13 +95,6 @@ export class GamifyLayerRepository implements IGamifyLayerRepository {
     }
     return event;
   }
-  // updateEvent(
-  //   eventId: ObjectId,
-  //   event: Partial<IEvents>,
-  //   session?: ClientSession,
-  // ): Promise<UpdateResult | null> {
-  //   throw new Error('Method not implemented.');
-  // }
 
   async updateEvent(
     eventId: ObjectId,
@@ -119,12 +112,6 @@ export class GamifyLayerRepository implements IGamifyLayerRepository {
     return result;
 }
 
-  // deleteEvent(
-  //   evenetId: ObjectId,
-  //   session?: ClientSession,
-  // ): Promise<DeleteResult | null> {
-  //   throw new Error('Method not implemented.');
-  // }
 
   async deleteEvent(
     eventId: ObjectId,

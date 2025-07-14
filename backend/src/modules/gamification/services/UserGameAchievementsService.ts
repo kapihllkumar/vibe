@@ -13,11 +13,11 @@ import {ObjectId} from 'mongodb';
 import {NotFoundError} from 'routing-controllers';
 
 /**
- * UserGameAchievementsService - handles business logic for user achievements
+ * userGameAchievementsService - handles business logic for user achievements
  * Manages user achievement collections and their unlocked status
  */
 @injectable()
-export class UserGameAchievementsService extends BaseService {
+export class userGameAchievementsService extends BaseService {
   constructor(
     @inject(GLOBAL_TYPES.GamifyEngineRepo)
     private readonly gamifyEngineRepo: IGamifyEngineRepository,
@@ -163,8 +163,6 @@ export class UserGameAchievementsService extends BaseService {
     return this._withTransaction(async session => {
       const userObjectId = new ObjectId(userId);
       const achievementObjectId = new ObjectId(achievementId);
-
-      // TODO: Consider implementing cascade deletion for better data management
 
       const deleteResult =
         await this.gamifyEngineRepo.deleteUserGameAchievement(

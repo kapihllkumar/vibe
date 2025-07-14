@@ -41,7 +41,6 @@ export const sharedContainerModule = new ContainerModule(options => {
     .bind(GLOBAL_TYPES.GamifyLayerRepo)
     .to(GamifyLayerRepository)
     .inSingletonScope();
-  options.bind(GLOBAL_TYPES.InviteRepo).to(InviteRepository).inSingletonScope();
 
   // Other
   options.bind(HttpErrorHandler).toSelf().inSingletonScope();

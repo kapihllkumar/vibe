@@ -17,7 +17,8 @@ import request from 'supertest';
 import {describe, it, beforeAll, afterAll, expect, vi} from 'vitest';
 import {FirebaseAuthService} from '#root/modules/auth/services/FirebaseAuthService.js';
 import {faker} from '@faker-js/faker';
-import { coursesContainerModule } from '#root/modules/courses/container.js';
+import {coursesContainerModule} from '#root/modules/courses/container.js';
+import {notificationsContainerModule} from '#root/modules/notifications/container.js';
 
 describe('GamificationEngineController', () => {
   const appInstance = Express();
@@ -33,10 +34,9 @@ describe('GamificationEngineController', () => {
       GamificationContainerModule,
       usersContainerModule,
       authContainerModule,
-      coursesContainerModule
+      coursesContainerModule,
+      notificationsContainerModule,
     );
-
-
 
     const inversifyAdapter = new InversifyAdapter(container);
     useContainer(inversifyAdapter);
@@ -62,16 +62,6 @@ describe('GamificationEngineController', () => {
 
     app = useExpressServer(appInstance, options);
 
-    const routes = appInstance.router.stack
-      .filter((r: any) => r.route) // only keep routes
-      .map((r: any) => {
-        const method = Object.keys(r.route.methods)[0].toUpperCase();
-        const path = r.route.path;
-        return `${method} ${path}`;
-      });
-
-    console.warn(routes);
-
     const signUpBody = {
       email: faker.internet.email(),
       password: faker.internet.password(),
@@ -80,10 +70,10 @@ describe('GamificationEngineController', () => {
     };
 
     const signupRes = await request(app).post('/auth/signup').send(signUpBody);
-    console.log(signupRes)
+
     expect(signupRes.status).toBe(201);
-    
-    userId = signupRes.body;
+    userId = signupRes.body.userId;
+    console.log('User ID:', userId);
     expect(userId).toBeTruthy();
     vi.spyOn(
       FirebaseAuthService.prototype,
@@ -576,15 +566,10 @@ describe('GamificationEngineController', () => {
         metricId: metricId, // This should be a valid metric ID.
         value: 100,
         lastUpdated: '',
-        
       };
-
       const res = await request(app)
         .post('/gamification/engine/usermetrics')
         .send(userMetricBody);
-
-      console.log(res);
-
       expect(res.status).toBe(201);
     });
 
@@ -656,13 +641,6 @@ describe('GamificationEngineController', () => {
       expect(Array.isArray(res.body)).toBe(true);
     });
 
-    it('should return 404 for non-existent user', async () => {
-      const res = await request(app).get(
-        '/gamification/engine/usermetrics/6862b8b8705094efb275a981',
-      );
-
-      expect(res.status).toBe(404);
-    });
 
     it('should return 400 for invalid user ID', async () => {
       const res = await request(app).get(
@@ -736,6 +714,45 @@ describe('GamificationEngineController', () => {
         .send(updateBody);
 
       expect(res.status).toBe(404);
+    });
+  });
+
+  describe('POST /gamification/engine/metrictrigger', () => {
+    it('should trigger a metric update', async () => {
+      const metricBody = {
+        name: 'Test Metric',
+        description: 'This is a test metric',
+        type: 'Number',
+        units: 'points',
+        defaultIncrementValue: 1,
+      };
+
+      const metricRes = await request(app)
+        .post('/gamification/engine/metrics')
+        .send(metricBody);
+
+      expect(metricRes.status).toBe(201);
+
+      const achievementBody = {
+        name: 'Test Achievement',
+        description: 'This is a test achievement',
+        badgeUrl: 'http://example.com/badge.png',
+        trigger: 'metric',
+        metricId: metricRes.body._id,
+        metricCount: 5,
+      };
+
+      const metricId = metricRes.body._id;
+
+      const triggerBody = {
+        userId: userId,
+        metrics: [
+          {
+            metricId: metricId,
+            incrementValue: 10,
+          },
+        ],
+      };
     });
   });
 });

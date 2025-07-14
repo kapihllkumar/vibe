@@ -2,34 +2,33 @@ import {ContainerModule} from 'inversify';
 import {GAMIFICATION_TYPES, QUIZZES_TYPES} from './types.js';
 import {GamifyEngineController} from './controllers/GamifyEngineController.js';
 import {
-  UserGameMetricsService,
-  UserGameAchievementsService,
-  AchievementService,
-  MetricService,
-  MetricTriggerService,
-  EventService,
-  RuleService,
+  userGameMetricsService,
+  userGameAchievementsService,
+  achievementService,
+  metricService,
+  metricTriggerService,
+  eventService,
+  ruleService,
   ScoringService
 } from './services/index.js';
 import {GamifyLayerController} from './controllers/GamifyLayerController.js';
 import { ScoreController } from '#root/modules/gamification/controllers/ScoreController.js';
 import { SubmissionRepository } from '#quizzes/repositories/providers/mongodb/SubmissionRepository.js';
-import { ScoringWeightsRepository } from '#shared/database/providers/mongo/repositories/WeightsRepository.js';
 export const GamificationContainerModule = new ContainerModule(options => {
   // Service
-  options.bind(GAMIFICATION_TYPES.MetricService).to(MetricService);
-  options.bind(GAMIFICATION_TYPES.AchievementService).to(AchievementService);
+  options.bind(GAMIFICATION_TYPES.MetricService).to(metricService);
+  options.bind(GAMIFICATION_TYPES.AchievementService).to(achievementService);
   options
     .bind(GAMIFICATION_TYPES.UserGameAchievementsService)
-    .to(UserGameAchievementsService);
+    .to(userGameAchievementsService);
   options
     .bind(GAMIFICATION_TYPES.UserGameMetricsService)
-    .to(UserGameMetricsService);
+    .to(userGameMetricsService);
   options
     .bind(GAMIFICATION_TYPES.MetricTriggerService)
-    .to(MetricTriggerService);
-  options.bind(GAMIFICATION_TYPES.EventService).to(EventService);
-  options.bind(GAMIFICATION_TYPES.RuleService).to(RuleService);
+    .to(metricTriggerService);
+  options.bind(GAMIFICATION_TYPES.EventService).to(eventService);
+  options.bind(GAMIFICATION_TYPES.RuleService).to(ruleService);
    options.bind(GAMIFICATION_TYPES.ScoringService).to(ScoringService).inSingletonScope();
 
   // controllers
@@ -37,8 +36,7 @@ export const GamificationContainerModule = new ContainerModule(options => {
   options.bind(GamifyLayerController).toSelf().inSingletonScope();
    options.bind(ScoreController).toSelf().inSingletonScope();
 
-   options.bind(GAMIFICATION_TYPES.WeightsRepo).to(ScoringWeightsRepository).inSingletonScope();
-  
-  // Controllers
+  // Repositories
+
    options.bind(QUIZZES_TYPES.SubmissionRepo).to(SubmissionRepository).inSingletonScope();
 });

@@ -82,6 +82,12 @@ export interface IGamifyEngineRepository {
     session?: ClientSession,
   ): Promise<IUserGameMetric | null>;
 
+  // Bulk create user game metrics (for lazy creation of metrics)
+  createUserGameMetrics(
+    userGameMetrics: IUserGameMetric[],
+    session?: ClientSession,
+  ): Promise<IUserGameMetric[] | null>;
+
   // Get all game metrics for a user
   readAllUserGameMetric(
     userId: string | ObjectId,
@@ -107,6 +113,11 @@ export interface IGamifyEngineRepository {
   deleteUserGameMetric(
     userId: string | ObjectId,
     gameMetricId: string | ObjectId,
+    session?: ClientSession,
+  ): Promise<DeleteResult | null>;
+
+  deleteUserGameMetricById(
+    metricId: string | ObjectId,
     session?: ClientSession,
   ): Promise<DeleteResult | null>;
 

@@ -19,7 +19,7 @@ import {ClientSession} from 'mongodb';
  */
 
 @injectable()
-export class RuleService extends BaseService {
+export class ruleService extends BaseService {
   constructor(
     @inject(GLOBAL_TYPES.Database)
     private readonly mongoDatabase: MongoDatabase,
