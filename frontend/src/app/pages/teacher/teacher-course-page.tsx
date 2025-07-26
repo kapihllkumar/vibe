@@ -588,26 +588,6 @@ setInitialModules(modules)
                                     <option value="quiz">Quiz</option>
 
                                   </select>
-                                  <Button
-                                    size="icon"
-                                    variant="secondary"
-                                    className="ml-3 px-2 py-2 text-[11px] rounded flex items-center gap-1 shadow min-h-6 h-6"
-                                    style={{ minWidth: 'unset' }}
-                                    onClick={() => {
-                                      setCurrentCourse({
-                                        courseId,
-                                        versionId,
-                                        moduleId: module.moduleId,
-                                        sectionId: section.sectionId,
-                                        itemId: null,
-                                        watchItemId: null,
-                                      });
-                                      navigate({ to: '/teacher/ai-section' });
-                                    }}
-                                  >
-                                    <Wand2 className="h-3.5 w-3.5" />
-                                    <span className="pr-1">AI</span>
-                                  </Button>
                                 </div>
 
                               </SidebarMenuSub>
@@ -625,6 +605,26 @@ setInitialModules(modules)
               >
                 <Plus className="h-3 w-3 mr-1" />
                 Add Section
+              </Button>
+              
+              <Button
+                size="sm"
+                variant="secondary"
+                className="ml-4 mt-1 h-6 text-xs flex items-center gap-1"
+                onClick={() => {
+                  setCurrentCourse({
+                    courseId,
+                    versionId,
+                    moduleId: module.moduleId,
+                    sectionId: null,
+                    itemId: null,
+                    watchItemId: null,
+                  });
+                  navigate({ to: '/teacher/ai-section' });
+                }}
+              >
+                <Wand2 className="h-3 w-3" />
+                Generate using AI
               </Button>
             </SidebarMenuSub>
           </Reorder.Group>
