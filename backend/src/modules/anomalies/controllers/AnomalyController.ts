@@ -37,8 +37,8 @@ export class AnomalyController {
   ) {}
 
   @OpenAPI({
-    summary: 'Record anomaly image',
-    description: 'Records an anomaly image stored in cloud storage.',
+    summary: 'Record anomaly',
+    description: 'Records anomaly with optional image/audio.',
   })
   @Post('/record')
   @HttpCode(201)
