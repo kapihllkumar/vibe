@@ -69,7 +69,7 @@ export class IAnomalyData {
 }
 
 export class AnomalyDataResponse extends IAnomalyData {
-  fileUrl: string
+  fileUrl?: string
 }
 
 export class AnomalyStats {

@@ -7,7 +7,6 @@ import { MongoDatabase } from '#root/shared/database/providers/mongo/MongoDataba
 import { GLOBAL_TYPES } from '#root/types.js';
 import { ANOMALIES_TYPES } from '../types.js';
 import { ICourseRepository } from '#root/shared/database/interfaces/ICourseRepository.js';
-import { IUserRepository } from '#root/shared/database/interfaces/IUserRepository.js';
 import { InternalServerError, NotFoundError } from 'routing-controllers';
 import { AnomalyDataResponse, AnomalyStats, AnomalyType, FileType, IAnomalyData } from '../classes/transformers/Anomaly.js';
 
@@ -17,7 +16,6 @@ export class AnomalyService extends BaseService {
     @inject(GLOBAL_TYPES.Database) db: MongoDatabase,
     @inject(ANOMALIES_TYPES.AnomalyRepository) private anomalyRepository: AnomalyRepository,
     @inject(ANOMALIES_TYPES.CloudStorageService) private cloudStorageService: CloudStorageService,
-    @inject(GLOBAL_TYPES.UserRepo) private readonly userRepo: IUserRepository,
     @inject(GLOBAL_TYPES.CourseRepo) private readonly courseRepo: ICourseRepository,
   ) {
     super(db);
@@ -41,7 +39,7 @@ export class AnomalyService extends BaseService {
         anomalyData,
         userId
       );
-      // For now the file and fileType are optional
+
       if(file && fileType){
         const fileName = await this.cloudStorageService.uploadAnomaly(
           file,
@@ -63,8 +61,8 @@ export class AnomalyService extends BaseService {
 
       savedAnomaly._id = savedAnomaly._id.toString();
       if(file && fileType) {
-      delete savedAnomaly.fileName;
-      delete savedAnomaly.fileType;
+        delete savedAnomaly.fileName;
+        delete savedAnomaly.fileType;
       }
       return savedAnomaly;
     });
@@ -189,9 +187,13 @@ export class AnomalyService extends BaseService {
     if (!result) {
       throw new NotFoundError('Anomaly not found');
     }
+    
     //download and decrypt
-    const fileUrl = await this.cloudStorageService.getSignedUrl(result.fileName);
-    delete result.fileName;
+    let fileUrl: string | undefined;
+    if (result.fileName) {
+      fileUrl = await this.cloudStorageService.getSignedUrl(result.fileName);
+      delete result.fileName;
+    }
     result._id = result._id.toString();
     return { ...result, fileUrl };
   }
