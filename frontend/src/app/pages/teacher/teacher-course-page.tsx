@@ -1,8 +1,8 @@
-import React, { useState, useEffect,useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Sidebar, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem,
   SidebarMenuButton, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton,
-  SidebarInset, SidebarProvider, SidebarTrigger, SidebarFooter
+  SidebarInset, SidebarProvider, SidebarFooter
 } from "@/components/ui/sidebar";
 import { Reorder } from "motion/react";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -11,19 +11,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
-  BookOpen, ChevronRight, FileText, VideoIcon, ListChecks, Plus, Pencil, Wand2
+  ChevronRight, FileText, VideoIcon, ListChecks, Plus, Wand2
 } from "lucide-react";
 
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Home, GraduationCap } from "lucide-react";
 
-import { useCourseVersionById, useCreateModule, useUpdateModule, useDeleteModule, useCreateSection, useUpdateSection, useDeleteSection, useCreateItem, useUpdateItem, useDeleteItem, useItemsBySectionId, useItemById, useQuizSubmissions, useQuizDetails, useQuizAnalytics, useQuizPerformance, useQuizResults,useMoveModule,useMoveSection,useMoveItem } from "@/hooks/hooks";
+import { useCourseVersionById, useCreateModule, useUpdateModule, useDeleteModule, useCreateSection, useUpdateSection, useDeleteSection, useCreateItem, useUpdateItem, useDeleteItem, useItemsBySectionId, useItemById, useQuizSubmissions, useQuizDetails, useQuizAnalytics, useQuizPerformance, useMoveModule, useMoveSection, useMoveItem } from "@/hooks/hooks";
 import { useCourseStore } from "@/store/course-store";
 import VideoModal from "./components/Video-modal";
 import EnhancedQuizEditor from "./components/enhanced-quiz-editor";
 import QuizWizardModal from "./components/quiz-wizard";
 import { useAuthStore } from "@/store/auth-store";
+import { AuroraText } from "@/components/magicui/aurora-text";
 
 // ✅ Icons per item type
 const getItemIcon = (type: string) => {
@@ -75,7 +76,7 @@ export default function TeacherCoursePage() {
 
   // Store items for each section
   const [sectionItems, setSectionItems] = useState<Record<string, any[]>>({});
-  
+
   // Track which section to fetch items for
   const [activeSectionInfo, setActiveSectionInfo] = useState<{ moduleId: string; sectionId: string } | null>(null);
 
@@ -123,30 +124,30 @@ export default function TeacherCoursePage() {
   const createModule = useCreateModule();
   const updateModule = useUpdateModule();
   const deleteModule = useDeleteModule();
-  const moveModule   = useMoveModule();
+  const moveModule = useMoveModule();
 
   const createSection = useCreateSection();
   const updateSection = useUpdateSection();
   const deleteSection = useDeleteSection();
-  const moveSection   = useMoveSection();
+  const moveSection = useMoveSection();
 
   const createItem = useCreateItem();
   const updateItem = useUpdateItem();
   const deleteItem = useDeleteItem();
- const { mutateAsync, isPending, isError, error } = useMoveItem();
+  const { mutateAsync: moveMutateAsync } = useMoveItem();
 
   useEffect(() => {
-    if (createModule.isSuccess || createSection.isSuccess || createItem.isSuccess || updateModule.isSuccess || updateSection.isSuccess || updateItem.isSuccess || deleteModule.isSuccess || deleteSection.isSuccess || deleteItem.isSuccess ||moveModule.isSuccess || moveSection.isSuccess  ) {
+    if (createModule.isSuccess || createSection.isSuccess || createItem.isSuccess || updateModule.isSuccess || updateSection.isSuccess || updateItem.isSuccess || deleteModule.isSuccess || deleteSection.isSuccess || deleteItem.isSuccess || moveModule.isSuccess || moveSection.isSuccess) {
       refetchVersion();
       console.log("hello")
       // Also refetch items for active section
-      
+
       if (activeSectionInfo) {
         setActiveSectionInfo({ ...activeSectionInfo }); // triggers refetch
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [createModule.isSuccess, createSection.isSuccess, createItem.isSuccess, updateModule.isSuccess, updateSection.isSuccess, updateItem.isSuccess, deleteModule.isSuccess, deleteSection.isSuccess, deleteItem.isSuccess,moveModule.isSuccess, moveSection.isSuccess]);
+  }, [createModule.isSuccess, createSection.isSuccess, createItem.isSuccess, updateModule.isSuccess, updateSection.isSuccess, updateItem.isSuccess, deleteModule.isSuccess, deleteSection.isSuccess, deleteItem.isSuccess, moveModule.isSuccess, moveSection.isSuccess]);
 
   // Reload items when quiz wizard closes
   useEffect(() => {
@@ -166,7 +167,7 @@ export default function TeacherCoursePage() {
       currentSectionItems &&
       !itemsLoading
     ) {
-      
+
       const itemsArray = (currentSectionItems as any)?.items || (Array.isArray(currentSectionItems) ? currentSectionItems : []);
       setSectionItems(prev => ({
         ...prev,
@@ -241,111 +242,112 @@ export default function TeacherCoursePage() {
 
   // Interim state of items
   const pendingOrderItems = useRef<typeof sectionItems>(sectionItems);
- 
+
   // Move module
-  const handleMoveModule=(moduleId: string, versionId?: string )=>{
+  const handleMoveModule = (moduleId: string, versionId?: string) => {
 
     const newList = pendingOrder.current;
-  const newIndex = newList.findIndex((mod:any) => mod.moduleId === moduleId);
+    const newIndex = newList.findIndex((mod: any) => mod.moduleId === moduleId);
 
-  const before = newList[newIndex + 1] || null;
-  const after = newList[newIndex - 1] || null;
+    const before = newList[newIndex + 1] || null;
+    const after = newList[newIndex - 1] || null;
 
- 
-    if(versionId&&moduleId){moveModule.mutate({
-    params: {
-      path: {
-        versionId,
-        moduleId,
-      },
-    },
-    body: {
-      ...(before
-        ? { beforeModuleId: before?.moduleId || "" }
-        : { afterModuleId: after?.moduleId || "" }),
-      
-      
-    },
-  });}
+
+    if (versionId && moduleId) {
+      moveModule.mutate({
+        params: {
+          path: {
+            versionId,
+            moduleId,
+          },
+        },
+        body: {
+          ...(before
+            ? { beforeModuleId: before?.moduleId || "" }
+            : { afterModuleId: after?.moduleId || "" }),
+
+
+        },
+      });
+    }
   }
 
- // Move section
-const handleMoveSection = (
-  moduleId: string,
-  sectionId: string,
-  versionId: string
-) => {
-  const order = pendingOrder.current[moduleId];
+  // Move section
+  const handleMoveSection = (
+    moduleId: string,
+    sectionId: string,
+    versionId: string
+  ) => {
+    const order = pendingOrder.current[moduleId];
 
-  if (!order) return;
+    if (!order) return;
 
-  const movedIndex = order.findIndex((s) => s.sectionId === sectionId);
-  if (movedIndex === -1) return;
+    const movedIndex = order.findIndex((s) => s.sectionId === sectionId);
+    if (movedIndex === -1) return;
 
-  const after = order[movedIndex - 1] || null;
-  const before = order[movedIndex + 1] || null;
+    const after = order[movedIndex - 1] || null;
+    const before = order[movedIndex + 1] || null;
 
-  moveSection.mutate({
-    params: {
-      path: {
-        versionId,
-        moduleId,
-        sectionId,
+    moveSection.mutate({
+      params: {
+        path: {
+          versionId,
+          moduleId,
+          sectionId,
+        },
       },
-    },
-    body: {
-      ...(before
-        ? { beforeSectionId: before.sectionId }
-        : after
-        ? { afterSectionId: after.sectionId }
-        : {}),
-    },
-  });
-};
-
-// Move item
-const handleMoveItem = async(
-  moduleId: string,
-  sectionId: string,
-  itemId: string,
-  versionId: string
-) => {
-  const order = pendingOrderItems.current[sectionId];
-  if (!order) return;
-
-  const movedIndex = order.findIndex((i) => i._id === itemId);
-  if (movedIndex === -1) return;
-
-  const after = order[movedIndex - 1] || null;
-  const before = order[movedIndex + 1] || null;
-
- mutateAsync({
-    params: {
-      path: {
-        versionId,
-        moduleId,
-        sectionId,
-        itemId, 
+      body: {
+        ...(before
+          ? { beforeSectionId: before.sectionId }
+          : after
+            ? { afterSectionId: after.sectionId }
+            : {}),
       },
-    },
-    body: {
-      ...(before
-        ? { beforeItemId: before._id }
-        : after
-        ? { afterItemId: after._id }
-        : {}),
-    },
-  }).then((res)=>{ refetchItems();})
- 
-};
+    });
+  };
+
+  // Move item
+  const handleMoveItem = async (
+    moduleId: string,
+    sectionId: string,
+    itemId: string,
+    versionId: string
+  ) => {
+    const order = pendingOrderItems.current[sectionId];
+    if (!order) return;
+
+    const movedIndex = order.findIndex((i) => i._id === itemId);
+    if (movedIndex === -1) return;
+
+    const after = order[movedIndex - 1] || null;
+    const before = order[movedIndex + 1] || null;
+
+    moveMutateAsync({
+      params: {
+        path: {
+          versionId,
+          moduleId,
+          sectionId,
+          itemId,
+        },
+      },
+      body: {
+        ...(before
+          ? { beforeItemId: before._id }
+          : after
+            ? { afterItemId: after._id }
+            : {}),
+      },
+    }).then((res) => { refetchItems(); })
+
+  };
 
 
-useEffect(()=>{
-  if(modules.length>0)
-  {
-setInitialModules(modules)
- }
-},[modules])
+  useEffect(() => {
+    if (modules.length > 0) {
+      setInitialModules(modules)
+    }
+  }, [modules])
   const navigate = useNavigate();
 
   return (
@@ -353,293 +355,268 @@ setInitialModules(modules)
       <div className="flex h-screen w-full">
         <Sidebar variant="inset" className="border-r border-border/40 bg-sidebar/50">
           <SidebarHeader className="border-b border-border/40">
-            <div className="flex items-center gap-3 px-3 py-2">
-              <BookOpen className="text-primary" />
-              <div>
-                <h1 className="text-base font-bold">Vibe (Teacher)</h1>
-                <p className="text-xs text-muted-foreground">Course Editor</p>
+            {/* Vibe Logo and Brand */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-lg overflow-hidden">
+                <img
+                src="https://continuousactivelearning.github.io/vibe/img/logo.png"
+                alt="Vibe Logo"
+                className="h-8 w-8 object-contain"
+                />
               </div>
+              <div className="flex flex-col leading-tight">
+                <span className="text-[1.15rem] font-bold leading-none">
+                <AuroraText colors={["#A07CFE", "#FE8FB5", "#FFBE7B"]}><b>ViBe</b></AuroraText>
+                </span>
+                <p className="text-xs text-muted-foreground">Learning Platform</p>
+              </div>
+              </div>
+              <ThemeToggle />
             </div>
             <Separator className="opacity-50" />
           </SidebarHeader>
 
           <SidebarContent
             className="bg-card/50 pl-2"
-            
+
           >
             <ScrollArea className="flex-1">
-    <Reorder.Group
-  axis="y"
-  onReorder={(newOrder) => {
-    pendingOrder.current = newOrder;
-  }}
-  values={initialModules}
->
-  <SidebarMenu className="space-y-2 text-sm pr-1 pt-2">
-   {initialModules
-  .slice() 
-  .sort((a: any, b: any) => a.order.localeCompare(b.order)) 
-  .map((module: any) => (
-      <SidebarMenuItem key={module.moduleId}>
-        <Reorder.Item
-          key={module.moduleId}
-          value={module}
-          drag
-          className="focus:outline-none"
-          whileDrag={{ scale: 1.02 }}
-          onDragEnd={() => {
-            setInitialModules(pendingOrder.current);
-            handleMoveModule(module.moduleId, versionId);
-          }}
-        >
-          <SidebarMenuButton
-            onClick={() => {
-              toggleModule(module.moduleId);
-              setSelectedEntity({ type: "module", data: module });
-            }}
-          >
-            <ChevronRight
-              className={`h-3.5 w-3.5 transition-transform ${
-                expandedModules[module.moduleId] ? "rotate-90" : ""
-              }`}
-            />
-            <span className="ml-2 truncate">{module.name}</span>
-          </SidebarMenuButton>
-        </Reorder.Item>
-
-        {expandedModules[module.moduleId] && (
-          <Reorder.Group
-            axis="y"
-            values={module.sections}
-            onReorder={(newSectionOrder) => {
-              pendingOrder.current[module.moduleId] = newSectionOrder;
-            }}
-          >
-            <SidebarMenuSub className="ml-2">
-              {module.sections?.map((section: any) => (
-                <Reorder.Item
-                  key={section.sectionId}
-                  value={section}
-                  drag
-                  className="focus:outline-none"
-                  whileDrag={{ scale: 1.02 }}
-                  onDragEnd={() => {
-                    setInitialModules((prev) =>
-                      prev.map((mod) =>
-                        mod.moduleId === module.moduleId
-                          ? { ...mod, sections: pendingOrder.current[module.moduleId] }
-                          : mod
-                      )
-                    );
-                    handleMoveSection(module.moduleId,section.sectionId, versionId);
-                  }}
-                >
-                  <SidebarMenuSubItem>
-                    <SidebarMenuSubButton
-                      onClick={() => {
-                        toggleSection(module.moduleId, section.sectionId);
-                        setSelectedEntity({
-                          type: "section",
-                          data: section,
-                          parentIds: { moduleId: module.moduleId },
-                        });
-                      }}
-                    >
-                      <ChevronRight
-                        className={`h-3 w-3 transition-transform ${
-                          expandedSections[section.sectionId] ? "rotate-90" : ""
-                        }`}
-                      />
-                      <span className="ml-2 truncate">{section.name}</span>
-                    </SidebarMenuSubButton>
-
-                    {expandedSections[section.sectionId] && (
-                      <Reorder.Group
-                        axis="y"
-                        values={sectionItems[section.sectionId]||[]}
-                        onReorder={(newItemOrder) => {
-                           pendingOrderItems.current[section.sectionId] = newItemOrder;
-                        }}
-                      >
-                        <SidebarMenuSub className="ml-4 space-y-1 pt-1">
-                          {(sectionItems[section.sectionId] || [])
-  .slice() 
-  .sort((a: any, b: any) => a.order.localeCompare(b.order)) 
-  .map((item: any) => (
-                            <Reorder.Item
-                              key={item._id}
-                              value={item}
-                              drag
-                              className="focus:outline-none"
-                              whileDrag={{ scale: 1.02 }}
-                              onDragEnd={() => {
-                               
-     setSectionItems((prev) => {
-  const items = pendingOrderItems.current[section.sectionId] || prev[section.sectionId];
-
-  // Sort by LexoRank-compatible `order` string
-  const sortedItems = [...items].sort((a, b) => a.order.localeCompare(b.order));
-
-  return {
-    ...prev,
-    [section.sectionId]: sortedItems
-  };
-});
-                               
-                                handleMoveItem(module.moduleId, section.sectionId,item._id, versionId);
-                              }}
-                            >
-                              <SidebarMenuSubItem key={item._id}>
-                                <SidebarMenuSubButton
-                                  className="justify-start"
-                                  onClick={() =>
-                                    setSelectedEntity({
-                                      type: "item",
-                                      data: item,
-                                      parentIds: {
-                                        moduleId: module.moduleId,
-                                        sectionId: section.sectionId,
-                                        itemsGroupId: section.itemsGroupId,
-                                      },
-                                    })
-                                  }
-                                >
-                                  {getItemIcon(item.type)}
-                                  <span className="ml-1 text-xs text-muted-foreground">
-                                    {item.type === "VIDEO" &&
-                                      `Video ${(sectionItems[section.sectionId] || []).filter(i => i.type === "VIDEO").findIndex(i => i._id === item._id) + 1}`}
-                                    {item.type === "QUIZ" &&
-                                      `Quiz ${(sectionItems[section.sectionId] || []).filter(i => i.type === "QUIZ").findIndex(i => i._id === item._id) + 1}`}
-                                    {item.type === "BLOG" &&
-                                      `Article ${(sectionItems[section.sectionId] || []).filter(i => i.type === "BLOG").findIndex(i => i._id === item._id) + 1}`}
-                                  </span>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            </Reorder.Item>
-                          ))}
-                        <div className="ml-6 mt-2">
-
-                                  <select
-
-                                    className="text-xs border rounded px-2 py-1 bg-background text-foreground"
-
-                                    defaultValue=""
-
-                                    onChange={(e) => {
-
-                                      const type = e.target.value;
-
-                                      if (type) {
-
-                                        if (type === "VIDEO") {
-
-                                          setShowAddVideoModal({
-
-                                            moduleId: module.moduleId,
-
-                                            sectionId: section.sectionId,
-
-                                          });
-
-                                        } else if (type === "quiz") {
-
-                                          setQuizModuleId(module.moduleId);
-
-                                          setQuizSectionId(section.sectionId);
-
-                                          // Update course store with current context
-
-                                          if (currentCourse) {
-
-                                            setCurrentCourse({
-
-                                              ...currentCourse,
-
-                                              moduleId: module.moduleId,
-
-                                              sectionId: section.sectionId
-
-                                            });
-
-                                          }
-
-                                          setQuizWizardOpen(true);
-
-                                        } else {
-
-                                          handleAddItem(module.moduleId, section.sectionId, type);
-
-                                        }
-
-                                        e.target.value = "";
-
-                                      }
-
-                                    }}
-
-                                  >
-
-                                    <option value="" disabled>Add Item</option>
-
-                                    <option value="article">Article</option>
-
-                                    <option value="VIDEO">Video</option>
-
-                                    <option value="quiz">Quiz</option>
-
-                                  </select>
-                                </div>
-
-                              </SidebarMenuSub>
-                      </Reorder.Group>
-                    )}
-                  </SidebarMenuSubItem>
-                </Reorder.Item>
-              ))}
-
-              <Button
-                size="sm"
-                variant="ghost"
-                className="ml-4 mt-2 h-6 text-xs"
-                onClick={() => handleAddSection(module.moduleId)}
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                Add Section
-              </Button>
-              
-              <Button
-                size="sm"
-                variant="secondary"
-                className="ml-4 mt-1 h-6 text-xs flex items-center gap-1"
-                onClick={() => {
-                  setCurrentCourse({
-                    courseId,
-                    versionId,
-                    moduleId: module.moduleId,
-                    sectionId: null,
-                    itemId: null,
-                    watchItemId: null,
-                  });
-                  navigate({ to: '/teacher/ai-section' });
+              <Reorder.Group
+                axis="y"
+                onReorder={(newOrder) => {
+                  pendingOrder.current = newOrder;
                 }}
+                values={initialModules}
               >
-                <Wand2 className="h-3 w-3" />
-                Generate using AI
-              </Button>
-            </SidebarMenuSub>
-          </Reorder.Group>
-        )}
-      </SidebarMenuItem>
-    ))}
+                <SidebarMenu className="space-y-2 text-sm pr-1 pt-2">
+                  {initialModules
+                    .slice()
+                    .sort((a: any, b: any) => a.order.localeCompare(b.order))
+                    .map((module: any) => (
+                      <SidebarMenuItem key={module.moduleId}>
+                        <Reorder.Item
+                          key={module.moduleId}
+                          value={module}
+                          drag
+                          className="focus:outline-none"
+                          whileDrag={{ scale: 1.02, zindex: 1001 }}
+                          onDragEnd={() => {
+                            setInitialModules(pendingOrder.current);
+                            handleMoveModule(module.moduleId, versionId);
+                          }}
+                        >
+                          <SidebarMenuButton
+                            onClick={() => {
+                              toggleModule(module.moduleId);
+                              setSelectedEntity({ type: "module", data: module });
+                            }}
+                          >
+                            <ChevronRight
+                              className={`h-3.5 w-3.5 transition-transform ${expandedModules[module.moduleId] ? "rotate-90" : ""
+                                }`}
+                            />
+                            <span className="ml-2 truncate">{module.name}</span>
+                          </SidebarMenuButton>
+                        </Reorder.Item>
 
-    <div className="px-2 pt-3">
-      <Button size="sm" className="w-full text-xs" onClick={handleAddModule}>
-        <Plus className="h-3 w-3 mr-1" />
-        Add Module
-      </Button>
-    </div>
-  </SidebarMenu>
-</Reorder.Group>
+                        {expandedModules[module.moduleId] && (
+                          <Reorder.Group
+                            axis="y"
+                            values={module.sections}
+                            onReorder={(newSectionOrder) => {
+                              pendingOrder.current[module.moduleId] = newSectionOrder;
+                            }}
+                          >
+                            <SidebarMenuSub className="ml-2">
+                              {module.sections?.map((section: any) => (
+                                <Reorder.Item
+                                  key={section.sectionId}
+                                  value={section}
+                                  drag
+                                  className="focus:outline-none"
+                                  whileDrag={{ scale: 1.02, zIndex:1001 }}
+                                  onDragEnd={() => {
+                                    setInitialModules((prev) =>
+                                      prev.map((mod) =>
+                                        mod.moduleId === module.moduleId
+                                          ? { ...mod, sections: pendingOrder.current[module.moduleId] }
+                                          : mod
+                                      )
+                                    );
+                                    handleMoveSection(module.moduleId, section.sectionId, versionId);
+                                  }}
+                                >
+                                  <SidebarMenuSubItem>
+                                    <SidebarMenuSubButton
+                                      onClick={() => {
+                                        toggleSection(module.moduleId, section.sectionId);
+                                        setSelectedEntity({
+                                          type: "section",
+                                          data: section,
+                                          parentIds: { moduleId: module.moduleId },
+                                        });
+                                      }}
+                                    >
+                                      <ChevronRight
+                                        className={`h-3 w-3 transition-transform ${expandedSections[section.sectionId] ? "rotate-90" : ""
+                                          }`}
+                                      />
+                                      <span className="ml-2 truncate">{section.name}</span>
+                                    </SidebarMenuSubButton>
+
+                                    {expandedSections[section.sectionId] && (
+                                      <Reorder.Group
+                                        axis="y"
+                                        values={sectionItems[section.sectionId] || []}
+                                        onReorder={(newItemOrder) => {
+                                          pendingOrderItems.current[section.sectionId] = newItemOrder;
+                                        }}
+                                      >
+                                        <SidebarMenuSub className="ml-4 space-y-1 pt-1">
+                                          {(sectionItems[section.sectionId] || [])
+                                            .slice()
+                                            .sort((a: any, b: any) => a.order.localeCompare(b.order))
+                                            .map((item: any) => (
+                                              <Reorder.Item
+                                                key={item._id}
+                                                value={item}
+                                                drag
+                                                className="focus:outline-none"
+                                                whileDrag={{ scale: 1.02, zindex: 1001 }}
+                                                onDragEnd={() => {
+
+                                                  setSectionItems((prev) => {
+                                                    const items = pendingOrderItems.current[section.sectionId] || prev[section.sectionId];
+
+                                                    // Sort by LexoRank-compatible `order` string
+                                                    const sortedItems = [...items].sort((a, b) => a.order.localeCompare(b.order));
+
+                                                    return {
+                                                      ...prev,
+                                                      [section.sectionId]: sortedItems
+                                                    };
+                                                  });
+
+                                                  handleMoveItem(module.moduleId, section.sectionId, item._id, versionId);
+                                                }}
+                                              >
+                                                <SidebarMenuSubItem key={item._id}>
+                                                  <SidebarMenuSubButton
+                                                    className="justify-start"
+                                                    onClick={() =>
+                                                      setSelectedEntity({
+                                                        type: "item",
+                                                        data: item,
+                                                        parentIds: {
+                                                          moduleId: module.moduleId,
+                                                          sectionId: section.sectionId,
+                                                          itemsGroupId: section.itemsGroupId,
+                                                        },
+                                                      })
+                                                    }
+                                                  >
+                                                    {getItemIcon(item.type)}
+                                                    <span className="ml-1 text-xs text-muted-foreground">
+                                                      {item.type === "VIDEO" &&
+                                                        `Video ${(sectionItems[section.sectionId] || []).filter(i => i.type === "VIDEO").findIndex(i => i._id === item._id) + 1}`}
+                                                      {item.type === "QUIZ" &&
+                                                        `Quiz ${(sectionItems[section.sectionId] || []).filter(i => i.type === "QUIZ").findIndex(i => i._id === item._id) + 1}`}
+                                                      {item.type === "BLOG" &&
+                                                        `Article ${(sectionItems[section.sectionId] || []).filter(i => i.type === "BLOG").findIndex(i => i._id === item._id) + 1}`}
+                                                    </span>
+                                                  </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                              </Reorder.Item>
+                                            ))}
+                                          <div className="ml-6 mt-2">
+                                            <select
+                                              className="text-xs border rounded px-2 py-1 bg-background text-foreground"
+                                              defaultValue=""
+                                              onChange={(e) => {
+                                                const type = e.target.value;
+                                                if (type) {
+                                                  if (type === "VIDEO") {
+                                                    setShowAddVideoModal({
+                                                      moduleId: module.moduleId,
+                                                      sectionId: section.sectionId,
+                                                    });
+                                                  } else if (type === "quiz") {
+                                                    setQuizModuleId(module.moduleId);
+                                                    setQuizSectionId(section.sectionId);
+                                                    // Update course store with current context
+                                                    if (currentCourse) {
+                                                      setCurrentCourse({
+                                                        ...currentCourse,
+                                                        moduleId: module.moduleId,
+                                                        sectionId: section.sectionId
+                                                      });
+                                                    }
+                                                    setQuizWizardOpen(true);
+                                                  } else {
+                                                    handleAddItem(module.moduleId, section.sectionId, type);
+                                                  }
+                                                  e.target.value = "";
+                                                }
+                                              }}
+                                            >
+                                              <option value="" disabled>Add Item</option>
+                                              <option value="article">Article</option>
+                                              <option value="VIDEO">Video</option>
+                                              <option value="quiz">Quiz</option>
+                                            </select>
+                                          </div>
+
+                                        </SidebarMenuSub>
+                                      </Reorder.Group>
+                                    )}
+                                  </SidebarMenuSubItem>
+                                </Reorder.Item>
+                              ))}
+
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="ml-4 mt-2 h-6 text-xs"
+                                onClick={() => handleAddSection(module.moduleId)}
+                              >
+                                <Plus className="h-3 w-3 mr-1" />
+                                Add Section
+                              </Button>
+
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                className="ml-4 mt-1 h-6 text-xs flex items-center gap-1"
+                                onClick={() => {
+                                  setCurrentCourse({
+                                    courseId,
+                                    versionId,
+                                    moduleId: module.moduleId,
+                                    sectionId: null,
+                                    itemId: null,
+                                    watchItemId: null,
+                                  });
+                                  navigate({ to: '/teacher/ai-section' });
+                                }}
+                              >
+                                <Wand2 className="h-3 w-3" />
+                                Generate using AI
+                              </Button>
+                            </SidebarMenuSub>
+                          </Reorder.Group>
+                        )}
+                      </SidebarMenuItem>
+                    ))}
+
+                  <div className="px-2 pt-3">
+                    <Button size="sm" className="w-full text-xs" onClick={handleAddModule}>
+                      <Plus className="h-3 w-3 mr-1" />
+                      Add Module
+                    </Button>
+                  </div>
+                </SidebarMenu>
+              </Reorder.Group>
 
 
             </ScrollArea>
