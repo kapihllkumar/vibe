@@ -13,7 +13,7 @@ import {
   IsJSON,
 } from 'class-validator';
 import { JSONSchema } from 'class-validator-jsonschema';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 import { LanguageType, JobType, TaskType, TaskStatus, audioData, contentUploadData, questionGenerationData, segmentationData, trascriptGenerationData } from '../transformers/GenAI.js';
 
 @JSONSchema({ title: 'TranscriptParameters' })
@@ -351,6 +351,16 @@ class JobBody {
   @IsObject()
   @ValidateNested()
   @Type(() => TranscriptParameters)
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value);
+      } catch (error) {
+        return value; // Let validation handle the error
+      }
+    }
+    return value;
+  })
   transcriptParameters?: TranscriptParameters;
 
   @JSONSchema({
@@ -362,6 +372,16 @@ class JobBody {
   @IsObject()
   @ValidateNested()
   @Type(() => SegmentationParameters)
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value);
+      } catch (error) {
+        return value; // Let validation handle the error
+      }
+    }
+    return value;
+  })
   segmentationParameters?: SegmentationParameters;
 
   @JSONSchema({
@@ -373,6 +393,16 @@ class JobBody {
   @IsObject()
   @ValidateNested()
   @Type(() => QuestionGenerationParameters)
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value);
+      } catch (error) {
+        return value; // Let validation handle the error
+      }
+    }
+    return value;
+  })
   questionGenerationParameters?: QuestionGenerationParameters;
 
   @JSONSchema({
@@ -384,6 +414,16 @@ class JobBody {
   @IsObject()
   @ValidateNested()
   @Type(() => UploadParameters)
+  @Transform(({ value }) => {
+    if (typeof value === 'string') {
+      try {
+        return JSON.parse(value);
+      } catch (error) {
+        return value; // Let validation handle the error
+      }
+    }
+    return value;
+  })
   uploadParameters: UploadParameters;
 }
 
