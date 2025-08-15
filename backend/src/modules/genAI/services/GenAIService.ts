@@ -23,6 +23,7 @@ import { aiConfig } from '#root/config/ai.js';
 import { appConfig } from '#root/config/app.js';
 import { ANOMALIES_TYPES } from '#root/modules/anomalies/types.js';
 import { CloudStorageService } from '#root/modules/anomalies/index.js';
+import { storageConfig } from '#root/config/storage.js';
 
 @injectable()
 export class GenAIService extends BaseService {
@@ -79,7 +80,7 @@ export class GenAIService extends BaseService {
         }
         // store on buckets
         const fileName = await this.cloudStorageService.uploadAudio(audio, jobId);
-        await this.genAIRepository.createTaskDataWithAudio(jobId, fileName, `https://storage.googleapis.com/${appConfig.firebase.storageBucket}/${fileName}`, session);
+        await this.genAIRepository.createTaskDataWithAudio(jobId, fileName, `https://storage.googleapis.com/${storageConfig.googleCloud.aiServerBucketName}/${fileName}`, session);
       }
       else {
         await this.genAIRepository.createTaskData(jobId, session);

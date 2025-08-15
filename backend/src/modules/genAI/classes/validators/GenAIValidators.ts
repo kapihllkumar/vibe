@@ -348,9 +348,6 @@ class JobBody {
     type: 'object',
   })
   @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => TranscriptParameters)
   @Transform(({ value }) => {
     if (typeof value === 'string') {
       try {
@@ -361,6 +358,9 @@ class JobBody {
     }
     return value;
   })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => TranscriptParameters)
   transcriptParameters?: TranscriptParameters;
 
   @JSONSchema({
@@ -368,10 +368,6 @@ class JobBody {
     description: 'Parameters for segmenting the video',
     type: 'object',
   })
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => SegmentationParameters)
   @Transform(({ value }) => {
     if (typeof value === 'string') {
       try {
@@ -382,6 +378,10 @@ class JobBody {
     }
     return value;
   })
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => SegmentationParameters)
   segmentationParameters?: SegmentationParameters;
 
   @JSONSchema({
@@ -390,9 +390,6 @@ class JobBody {
     type: 'object',
   })
   @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => QuestionGenerationParameters)
   @Transform(({ value }) => {
     if (typeof value === 'string') {
       try {
@@ -403,6 +400,9 @@ class JobBody {
     }
     return value;
   })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => QuestionGenerationParameters)
   questionGenerationParameters?: QuestionGenerationParameters;
 
   @JSONSchema({
@@ -411,9 +411,6 @@ class JobBody {
     type: 'object',
   })
   @IsNotEmpty()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => UploadParameters)
   @Transform(({ value }) => {
     if (typeof value === 'string') {
       try {
@@ -424,6 +421,9 @@ class JobBody {
     }
     return value;
   })
+  @IsObject()
+  @ValidateNested()
+  @Type(() => UploadParameters)
   uploadParameters: UploadParameters;
 }
 

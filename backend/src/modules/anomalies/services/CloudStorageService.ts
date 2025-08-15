@@ -5,14 +5,16 @@ import { storageConfig } from '#root/config/storage.js';
 
 @injectable()
 export class CloudStorageService {
-  private anomalyStorage: Storage;
-  private bucketName: string;
+  private googleStorage: Storage;
+  private anomalyBucketName: string;
+  private aiServerBucketName: string;
 
   constructor() {
-    this.anomalyStorage = new Storage({
+    this.googleStorage = new Storage({
       projectId: storageConfig.googleCloud.projectId
     });
-    this.bucketName = storageConfig.googleCloud.anomalyBucketName;
+    this.anomalyBucketName = storageConfig.googleCloud.anomalyBucketName;
+    this.aiServerBucketName = storageConfig.googleCloud.aiServerBucketName;
   }
 
   /**
@@ -27,7 +29,7 @@ export class CloudStorageService {
   ): Promise<string> {
     const ext = type.split('/')[1];
     const filename = `${userId}/${anomalyType}/${timestamp.toISOString()}.${ext}`;
-    const bucket = this.anomalyStorage.bucket(this.bucketName);
+    const bucket = this.googleStorage.bucket(this.anomalyBucketName);
     const createdFile = bucket.file(filename);
 
     // Upload file with metadata
@@ -45,7 +47,7 @@ export class CloudStorageService {
    * Delete anomaly from cloud storage
    */
   async deleteAnomaly(fileName: string): Promise<void> {
-    const bucket = this.anomalyStorage.bucket(this.bucketName);
+    const bucket = this.googleStorage.bucket(this.anomalyBucketName);
     const file = bucket.file(fileName);
 
     try {
@@ -56,7 +58,7 @@ export class CloudStorageService {
   }
 
   async getSignedUrl(fileName: string): Promise<string> {
-    const bucket = this.anomalyStorage.bucket(this.bucketName);
+    const bucket = this.googleStorage.bucket(this.anomalyBucketName);
     const file = bucket.file(fileName);
 
     try {
@@ -74,14 +76,14 @@ export class CloudStorageService {
     audio: Express.Multer.File,
     jobId: string,
   ) {
-    const bucket = this.anomalyStorage.bucket(this.bucketName);
-    const file = bucket.file(`vibe-aiserver-data/audio/${jobId}.${audio.mimetype.split('/')[1]}`);
+    const bucket = this.googleStorage.bucket(this.aiServerBucketName);
+    const file = bucket.file(`audio/${jobId}.${audio.mimetype.split('/')[1]}`);
 
     try {
       await file.save(audio.buffer, {
         metadata: {
           contentType: audio.mimetype,
-        },
+        }
       });
       return file.name;
     } catch (error) {
