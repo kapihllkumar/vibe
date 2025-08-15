@@ -82,7 +82,7 @@ export class GenAIController {
     summary: 'Start a new job',
     description: 'Starts a new genAI process. Audio file provided.',
   })
-  @Post("/jobs")
+  @Post("/jobs/audio-provided")
   @Authorized()
   @HttpCode(201)
   @ResponseSchema(GenAIResponse, {
