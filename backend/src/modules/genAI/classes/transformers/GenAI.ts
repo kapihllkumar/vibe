@@ -62,7 +62,7 @@ export interface UploadParameters {
 
 export interface audioData {
 	status: TaskStatus;
-	error: string;
+	error?: string;
 	fileName?: string;
 	fileUrl?: string;
 }
