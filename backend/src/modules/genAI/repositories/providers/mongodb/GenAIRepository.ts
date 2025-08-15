@@ -1,4 +1,4 @@
-import { JobStatus, GenAIBody, TaskData } from "#root/modules/genAI/classes/transformers/GenAI.js";
+import { JobStatus, GenAIBody, TaskData, TaskStatus } from "#root/modules/genAI/classes/transformers/GenAI.js";
 import { JobBody } from "#root/modules/genAI/classes/validators/GenAIValidators.js";
 import { MongoDatabase } from "#root/shared/index.js";
 import { GLOBAL_TYPES } from "#root/types.js";
@@ -20,11 +20,12 @@ export class GenAIRepository {
 		this.taskDataCollection = await this.db.getCollection<TaskData>('job_task_status')
 	}
 
-	async save(userId: string, jobData: JobBody, session?:ClientSession): Promise<string> {
+	async save(userId: string, jobData: JobBody, audioProvided?: boolean, session?:ClientSession): Promise<string> {
 		await this.init();
 		const result = await this.genAICollection.insertOne(
 			{
 				userId: userId,
+				audioProvided: audioProvided || false,
 				...jobData,
 				createdAt: new Date(),
 				jobStatus: new JobStatus(),
@@ -39,6 +40,22 @@ export class GenAIRepository {
 		const result = await this.taskDataCollection.insertOne(
 			{ jobId: jobId }, { session }
 		)
+		return result.insertedId?.toString();
+	}
+
+	async createTaskDataWithAudio(jobId: string, audioName: string, audioUrl: string, session?: ClientSession): Promise<string> {
+		await this.init();
+		const result = await this.taskDataCollection.insertOne(
+			{ 
+				jobId: jobId,
+				audioExtraction: [{
+					status: TaskStatus.COMPLETED,
+					fileName: audioName,
+					fileUrl: audioUrl
+				}]
+			}, 
+			{ session }
+		);
 		return result.insertedId?.toString();
 	}
 

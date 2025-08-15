@@ -69,4 +69,23 @@ export class CloudStorageService {
       throw new InternalServerError(`Failed to get signed URL: ${error.message}`);
     }
   }
+
+  async uploadAudio(
+    audio: Express.Multer.File,
+    jobId: string,
+  ) {
+    const bucket = this.anomalyStorage.bucket(this.bucketName);
+    const file = bucket.file(`vibe-aiserver-data/audio/${jobId}.${audio.mimetype.split('/')[1]}`);
+
+    try {
+      await file.save(audio.buffer, {
+        metadata: {
+          contentType: audio.mimetype,
+        },
+      });
+      return file.name;
+    } catch (error) {
+      throw new InternalServerError(`Failed to upload audio: ${error.message}`);
+    }
+  }
 }

@@ -21,6 +21,8 @@ import axios from 'axios';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { aiConfig } from '#root/config/ai.js';
 import { appConfig } from '#root/config/app.js';
+import { ANOMALIES_TYPES } from '#root/modules/anomalies/types.js';
+import { CloudStorageService } from '#root/modules/anomalies/index.js';
 
 @injectable()
 export class GenAIService extends BaseService {
@@ -46,6 +48,9 @@ export class GenAIService extends BaseService {
     @inject(GLOBAL_TYPES.Database)
     private readonly mongoDatabase: MongoDatabase,
 
+    @inject(ANOMALIES_TYPES.CloudStorageService)
+    private readonly cloudStorageService: CloudStorageService,
+
     private storage = new Storage({
       projectId: appConfig.firebase.projectId,
     })
@@ -58,15 +63,27 @@ export class GenAIService extends BaseService {
    * @param jobData Job configuration data
    * @returns Created job data
    */
-  async startJob(userId: string, jobData: JobBody): Promise<{ jobId: string }> {
+  async startJob(userId: string, jobData: JobBody, audio?: Express.Multer.File): Promise<{ jobId: string }> {
     return this._withTransaction(async session => {
+
       // Prepare job data and send to AI server]
       const result = await this.webhookService.AIServerCheck();
       if (result !== 200) {
         throw new Error('Failed to connect to AI server');
       }
-      const jobId = await this.genAIRepository.save(userId, jobData, session)
-      await this.genAIRepository.createTaskData(jobId, session);
+      const jobId = await this.genAIRepository.save(userId, jobData, audio? true : false, session)
+      if (audio) {
+        // check file type (audio/)
+        if (!audio.mimetype.startsWith('audio/')) {
+          throw new BadRequestError('Invalid file type. Please upload an audio file.');
+        }
+        // store on buckets
+        const fileName = await this.cloudStorageService.uploadAudio(audio, jobId);
+        await this.genAIRepository.createTaskDataWithAudio(jobId, fileName, `https://storage.googleapis.com/${appConfig.firebase.storageBucket}/${fileName}`, session);
+      }
+      else {
+        await this.genAIRepository.createTaskData(jobId, session);
+      }
 
       return {jobId};
     });
