@@ -72,7 +72,7 @@ export class GenAIService extends BaseService {
       if (result !== 200) {
         throw new Error('Failed to connect to AI server');
       }
-      const jobId = await this.genAIRepository.save(userId, jobData, audio? true : false, session)
+      const jobId = await this.genAIRepository.save(userId, jobData, audio? true : false, jobData.transcript ? true : false, session)
       if (audio) {
         // check file type (audio/)
         if (!audio.mimetype.startsWith('audio/')) {
@@ -81,6 +81,10 @@ export class GenAIService extends BaseService {
         // store on buckets
         const fileName = await this.cloudStorageService.uploadAudio(audio, jobId);
         await this.genAIRepository.createTaskDataWithAudio(jobId, fileName, `https://storage.googleapis.com/${storageConfig.googleCloud.aiServerBucketName}/${fileName}`, session);
+      }
+      else if (jobData.transcript) {
+        const fileName = await this.cloudStorageService.uploadTranscript(jobData.transcript, jobId);
+        await this.genAIRepository.createTaskDataWithTranscript(jobId, fileName, `https://storage.googleapis.com/${storageConfig.googleCloud.aiServerBucketName}/${fileName}`, session);
       }
       else {
         await this.genAIRepository.createTaskData(jobId, session);

@@ -289,6 +289,37 @@ class PartialUploadParameters {
 	questionsPerQuiz?: number;
 }
 
+class Chunk {
+  @JSONSchema({
+    description: 'Timestamps of the chunk',
+    example: [0, 5],
+    type: 'array',
+  })
+  @IsArray()
+  @IsNumber({}, { each: true })
+  timestamp: Array<number>;
+
+  @JSONSchema({
+    description: 'Text content of the chunk',
+    example: 'This is a sample chunk of text.',
+    type: 'string',
+  })
+  @IsNotEmpty()
+  @IsString()
+  text: string;
+}
+
+class Transcript {
+  @JSONSchema({
+    description: 'Chunks of the transcript',
+    type: 'array'
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => Chunk)
+  chunks: Array<Chunk>;
+}
+
 class GenAIResponse{
   @JSONSchema({
     description: 'Unique identifier for the genAI job',
@@ -341,6 +372,18 @@ class JobBody {
   @IsString()
   @IsUrl()
   url: string;
+
+  @JSONSchema({
+    title: 'Transcript',
+    description: 'Transcript of the video',
+    example: {},
+    type: 'object',
+  })
+  @IsNotEmpty()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => Transcript)
+  transcript?: Transcript;
 
   @JSONSchema({
     title: 'Transcript Parameters',

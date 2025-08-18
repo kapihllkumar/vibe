@@ -90,4 +90,26 @@ export class CloudStorageService {
       throw new InternalServerError(`Failed to upload audio: ${error.message}`);
     }
   }
+
+  async uploadTranscript(
+    transcript: object,
+    jobId: string,
+  ) {
+    const bucket = this.googleStorage.bucket(this.aiServerBucketName);
+    const file = bucket.file(`transcripts/${jobId}.json`);
+
+    try {
+      const jsonString = JSON.stringify(transcript, null, 2);
+      const buffer = Buffer.from(jsonString, 'utf8');
+      
+      await file.save(buffer, {
+        metadata: {
+          contentType: 'application/json',
+        }
+      });
+      return file.name;
+    } catch (error) {
+      throw new InternalServerError(`Failed to upload transcript: ${error.message}`);
+    }
+  }
 }

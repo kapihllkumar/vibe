@@ -20,12 +20,17 @@ export class GenAIRepository {
 		this.taskDataCollection = await this.db.getCollection<TaskData>('job_task_status')
 	}
 
-	async save(userId: string, jobData: JobBody, audioProvided?: boolean, session?:ClientSession): Promise<string> {
+	async save(userId: string, jobData: JobBody, audioProvided?: boolean, transcriptProvided?: boolean, session?:ClientSession): Promise<string> {
 		await this.init();
 		const jobStatus = new JobStatus();
 		if (audioProvided) {
 			jobStatus.audioExtraction = TaskStatus.COMPLETED;
 			jobStatus.transcriptGeneration = TaskStatus.WAITING;
+		}
+		if (transcriptProvided) {
+			jobStatus.audioExtraction = TaskStatus.COMPLETED;
+			jobStatus.transcriptGeneration = TaskStatus.COMPLETED;
+			jobStatus.segmentation = TaskStatus.WAITING;
 		}
 		const result = await this.genAICollection.insertOne(
 			{
@@ -57,6 +62,22 @@ export class GenAIRepository {
 					status: TaskStatus.COMPLETED,
 					fileName: audioName,
 					fileUrl: audioUrl
+				}]
+			}, 
+			{ session }
+		);
+		return result.insertedId?.toString();
+	}
+
+	async createTaskDataWithTranscript(jobId: string, fileName: string, url: string, session?: ClientSession): Promise<string> {
+		await this.init();
+		const result = await this.taskDataCollection.insertOne(
+			{ 
+				jobId: jobId,
+				transcriptGeneration: [{
+					status: TaskStatus.COMPLETED,
+					fileName: fileName,
+					fileUrl: url
 				}]
 			}, 
 			{ session }
