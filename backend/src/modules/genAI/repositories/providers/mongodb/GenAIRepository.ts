@@ -23,6 +23,7 @@ export class GenAIRepository {
 	async save(userId: string, jobData: JobBody, audioProvided?: boolean, transcriptProvided?: boolean, session?:ClientSession): Promise<string> {
 		await this.init();
 		const jobStatus = new JobStatus();
+		const jobDataToSave = { ...jobData };
 		if (audioProvided) {
 			jobStatus.audioExtraction = TaskStatus.COMPLETED;
 			jobStatus.transcriptGeneration = TaskStatus.WAITING;
@@ -31,12 +32,14 @@ export class GenAIRepository {
 			jobStatus.audioExtraction = TaskStatus.COMPLETED;
 			jobStatus.transcriptGeneration = TaskStatus.COMPLETED;
 			jobStatus.segmentation = TaskStatus.WAITING;
+			delete jobDataToSave.transcript;
 		}
 		const result = await this.genAICollection.insertOne(
 			{
 				userId: userId,
-				audioProvided: audioProvided || false,
-				...jobData,
+				audioProvided: audioProvided,
+				transcriptProvided: transcriptProvided,
+				...jobDataToSave,
 				createdAt: new Date(),
 				jobStatus: jobStatus,
 			}

@@ -125,7 +125,8 @@ export class GenAI {
 export class GenAIBody extends GenAI {
 	_id?: ID;
 	userId: string;
-	audioProvided: boolean;
+	audioProvided?: boolean;
+	transcriptProvided?: boolean;
 	createdAt: Date;
 	jobStatus: JobStatus;
 }
