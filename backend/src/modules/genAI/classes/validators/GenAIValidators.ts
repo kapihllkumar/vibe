@@ -379,7 +379,7 @@ class JobBody {
     example: {},
     type: 'object',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => Transcript)
